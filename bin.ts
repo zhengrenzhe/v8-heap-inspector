@@ -1,3 +1,3 @@
-#!/usr/bin/env -S ts-node --script-mode
+#!/usr/bin/env node
 
-console.log("bin");
+console.log("@v8-heap-inspector/v8-heap-inspector");

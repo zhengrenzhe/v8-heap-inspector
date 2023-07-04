@@ -1,10 +1,10 @@
 {
   "name": "@v8-heap-inspector/v8-heap-inspector",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "main": "index.js",
   "types": "index.d.ts",
   "bin": {
-    "v8-heap-inspector": "bin.ts"
+    "v8-heap-inspector": "bin.js"
   },
   "napi": {
     "name": "v8-heap-inspector",
@@ -31,7 +31,9 @@
   },
   "scripts": {
     "artifacts": "napi artifacts",
-    "build": "napi build --platform --release",
+    "build": "npm run build:ts && napi build --platform --release",
+    "build:ts": "tsc",
+    "clean:ts": "rm **/*.js",
     "build:debug": "napi build --platform",
     "prepublishOnly": "napi prepublish -t npm",
     "test": "echo 'hello'",
