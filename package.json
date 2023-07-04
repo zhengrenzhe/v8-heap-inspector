@@ -31,7 +31,7 @@
     "build:ts": "tsc",
     "clean:ts": "rm **/*.js",
     "build:debug": "napi build --platform",
-    "prepublishOnly": "napi prepublish -t npm",
+    "prepublishOnly": "npm run build:ts && napi prepublish -t npm",
     "test": "echo 'hello'",
     "universal": "napi universal",
     "version": "napi version"
