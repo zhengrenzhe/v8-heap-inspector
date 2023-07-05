@@ -20,6 +20,8 @@
   "license": "AGPL-3.0",
   "devDependencies": {
     "@napi-rs/cli": "^2.16.1",
+    "prettier": "^3.0.0",
+    "rimraf": "^5.0.1",
     "typescript": "^5.1.6"
   },
   "engines": {
@@ -27,10 +29,10 @@
   },
   "scripts": {
     "artifacts": "napi artifacts",
-    "build": "npm run build:ts && napi build --platform --release",
+    "build": "npm run build:ts && napi build --platform --release --js binding.js --dts binding.d.ts",
     "build:ts": "tsc",
-    "clean:ts": "rm **/*.js",
-    "build:debug": "napi build --platform",
+    "clean": "rimraf -g bin.js binding.js bin.d.ts binding.d.ts v8*.node",
+    "build:debug": "napi build --platform --js binding.js --dts binding.d.ts",
     "prepublishOnly": "npm run build:ts && napi prepublish -t npm",
     "test": "echo 'hello'",
     "universal": "napi universal",
