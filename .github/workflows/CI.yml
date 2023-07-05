@@ -8,8 +8,8 @@ env:
     tags:        
       - v2
       - v1.*
-    branches:
-      - main
+    # branches:
+      # - main
     paths-ignore:
       - '**/*.md'
       - LICENSE
