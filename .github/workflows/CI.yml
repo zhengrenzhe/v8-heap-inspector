@@ -6,10 +6,7 @@ env:
 'on':
   push:
     tags:        
-      - v2
-      - v1.*
-    # branches:
-      # - main
+      - [0-9].[0-9].[0-9]
     paths-ignore:
       - '**/*.md'
       - LICENSE
