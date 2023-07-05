@@ -1,3 +1,5 @@
 #!/usr/bin/env node
 
-console.log("@v8-heap-inspector/v8-heap-inspector");
+import { LocalAnalyzer } from "./binding";
+
+new LocalAnalyzer("/Users/zheng/Desktop/lite.heapsnapshot").log();
