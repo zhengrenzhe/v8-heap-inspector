@@ -1,4 +1,4 @@
-name: release
+name: release-pkg
 env:
   DEBUG: napi:*
   APP_NAME: v8-heap-inspector
