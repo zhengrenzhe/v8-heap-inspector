@@ -285,6 +285,8 @@ jobs:
         run: ls -R ./npm
         shell: bash
       - name: Publish
+        run: |
           npm publish --tag next --access public
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
