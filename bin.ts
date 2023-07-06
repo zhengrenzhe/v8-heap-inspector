@@ -1,5 +1,23 @@
 #!/usr/bin/env node
 
-import { LocalAnalyzer } from "./binding";
+import arg from "arg";
+import path from "path";
+import { Local } from "./cli";
 
-new LocalAnalyzer("/Users/zheng/Desktop/lite.heapsnapshot").log();
+const args = arg({
+  // Types
+  "--local": Boolean,
+  "--file": String,
+
+  // Aliases
+  "-l": "--local",
+  "-f": "--file",
+});
+
+if (args["--local"] && args["--file"]) {
+  const filePath = path.isAbsolute(args["--file"])
+    ? args["--file"]
+    : path.join(process.cwd(), args["--file"]);
+
+  new Local(filePath);
+}
