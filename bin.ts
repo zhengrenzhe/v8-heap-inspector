@@ -2,6 +2,7 @@
 
 import arg from "arg";
 import path from "path";
+
 import { Local } from "./cli";
 
 const args = arg({

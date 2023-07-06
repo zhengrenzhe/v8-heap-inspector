@@ -1,18 +1,8 @@
-use std::fs;
-
 use super::{
   SnapshotDeserialized, SnapshotEdge, SnapshotFileRaw, SnapshotNode, EDGE_FIELDS, NODE_FIELDS,
 };
 
-pub fn deserialize_from(path: String) -> SnapshotDeserialized {
-  if let Ok(mut slice) = fs::read(&path) {
-    return deserialize(&mut slice);
-  }
-
-  panic!("Failed to read snapshot file {}", path);
-}
-
-pub fn deserialize(slice: &mut Vec<u8>) -> SnapshotDeserialized {
+pub fn deserialize(slice: &Vec<u8>) -> SnapshotDeserialized {
   let raw: SnapshotFileRaw = serde_json::from_slice(slice).unwrap();
 
   let mut nodes: Vec<SnapshotNode> = Vec::with_capacity(raw.snapshot.node_count as usize);
