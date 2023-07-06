@@ -31,7 +31,7 @@
     "artifacts": "napi artifacts",
     "build": "napi build --platform --release --js binding.js --dts binding.d.ts && npm run build:ts",
     "build:ts": "tsc",
-    "clean": "rimraf -g bin.js binding.js bin.d.ts binding.d.ts v8*.node",
+    "clean": "rimraf -g bin.js binding.js bin.d.ts binding.d.ts v8*.node cli/**/**/*.js",
     "build:debug": "napi build --platform --js binding.js --dts binding.d.ts",
     "prepublishOnly": "npm run build:ts && napi prepublish -t npm",
     "test": "echo 'hello'",
