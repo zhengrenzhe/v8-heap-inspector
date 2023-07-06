@@ -9,10 +9,12 @@ const args = arg({
   // Types
   "--local": Boolean,
   "--file": String,
+  "--port": Number,
 
   // Aliases
   "-l": "--local",
   "-f": "--file",
+  "-p": "--port",
 });
 
 if (args["--local"] && args["--file"]) {
@@ -20,5 +22,5 @@ if (args["--local"] && args["--file"]) {
     ? args["--file"]
     : path.join(process.cwd(), args["--file"]);
 
-  new Local(filePath);
+  new Local(filePath, args["--port"] ?? 3000);
 }
