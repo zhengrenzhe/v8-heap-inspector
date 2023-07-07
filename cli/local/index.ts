@@ -30,15 +30,18 @@ export class Local {
     console.log(chalk.green(`start server on port ${port}`));
 
     this.server = express();
-    this.server.get("/api", (req, res) => this.get_meta(res));
+    this.server.get("/api/meta", (_, res) => this.api_meta(res));
+    this.server.get("/api/statistics", (_, res) => this.api_statistics(res));
     this.server.listen(port);
   }
 
-  private get_meta(res: Response) {
+  private api_meta(res: Response) {
     const meta = this.analyzer.meta();
-    res.json({
-      path: meta.path,
-      size: meta.size,
-    });
+    res.json(meta);
+  }
+
+  private api_statistics(res: Response) {
+    const statistics = this.analyzer.statistics();
+    res.json(statistics);
   }
 }

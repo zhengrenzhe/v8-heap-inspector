@@ -79,10 +79,8 @@ pub fn deserialize(slice: &Vec<u8>) -> SnapshotDeserialized {
       name_or_index_raw: all_edges[edge_base_idx + 1],
       to_node_index: edge_to_node_idx as u64,
       to_node_id,
-      target: to_node_id,
       from_node_index: edge_from_node_idx as u64,
       from_node_id,
-      source: from_node_id,
     });
 
     edge_from_node_acc += 1;
