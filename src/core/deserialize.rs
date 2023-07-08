@@ -1,8 +1,10 @@
 use super::{
   SnapshotDeserialized, SnapshotEdge, SnapshotFileRaw, SnapshotNode, EDGE_FIELDS, NODE_FIELDS,
 };
+use petgraph::visit::NodeRef;
+use petgraph::Graph;
 
-pub fn deserialize(slice: &Vec<u8>) -> SnapshotDeserialized {
+pub fn deserialize(slice: &[u8]) -> SnapshotDeserialized {
   let raw: SnapshotFileRaw = serde_json::from_slice(slice).unwrap();
 
   let mut nodes: Vec<SnapshotNode> = Vec::with_capacity(raw.snapshot.node_count as usize);
@@ -11,8 +13,13 @@ pub fn deserialize(slice: &Vec<u8>) -> SnapshotDeserialized {
   let all_nodes = &raw.nodes;
   let all_edges = &raw.edges;
 
+  let mut graph = Graph::<usize, usize>::new();
+
   // parse nodes
   for (node_idx, node_base_idx) in (0..all_nodes.len()).step_by(NODE_FIELDS.len()).enumerate() {
+    // add node to graph
+    let graph_node = graph.add_node(node_idx);
+
     // node type index
     let node_type_index = all_nodes[node_base_idx] as usize;
 
@@ -46,6 +53,7 @@ pub fn deserialize(slice: &Vec<u8>) -> SnapshotDeserialized {
       detachedness,
       from_edge_index: Vec::with_capacity(edge_count as usize),
       to_edge_index: Vec::with_capacity(edge_count as usize),
+      graph_node,
     });
   }
 
@@ -67,11 +75,16 @@ pub fn deserialize(slice: &Vec<u8>) -> SnapshotDeserialized {
     let from_node = &mut nodes[edge_from_node_idx];
     from_node.to_edge_index.push(edge_idx as u64);
     let from_node_id = from_node.id;
+    let from_node_graph_id = from_node.graph_node.id();
 
     // to node
     let to_node = &mut nodes[edge_to_node_idx];
     to_node.from_edge_index.push(edge_idx as u64);
     let to_node_id = to_node.id;
+    let to_node_graph_id = to_node.graph_node.id();
+
+    // update graph
+    graph.add_edge(from_node_graph_id, to_node_graph_id, 0);
 
     edges.push(SnapshotEdge {
       edge_index: edge_idx as u64,
@@ -92,5 +105,9 @@ pub fn deserialize(slice: &Vec<u8>) -> SnapshotDeserialized {
     }
   }
 
-  return SnapshotDeserialized { nodes, edges };
+  SnapshotDeserialized {
+    nodes,
+    edges,
+    graph,
+  }
 }

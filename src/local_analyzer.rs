@@ -58,14 +58,10 @@ impl LocalAnalyzer {
     let mut total_size = 0;
 
     let size = NODE_TYPES_LENGTH as usize;
-    let mut distribution: Vec<i64> = Vec::with_capacity(size);
-    for _ in 0..size {
-      distribution.push(0);
-    }
+    let mut distribution: Vec<i64> = vec![0; size];
 
     for node in self.snapshot.nodes.iter() {
       total_size += node.self_size;
-
       distribution[node.node_type_index] += node.self_size as i64;
     }
 

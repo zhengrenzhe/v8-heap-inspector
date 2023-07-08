@@ -1,5 +1,5 @@
 #[napi]
-pub const NODE_TYPES: [&'static str; 15] = [
+pub const NODE_TYPES: [&str; 15] = [
   "hidden",
   "array",
   "string",
@@ -21,12 +21,12 @@ pub const NODE_TYPES: [&'static str; 15] = [
 pub const NODE_TYPES_LENGTH: i32 = NODE_TYPES.len() as i32;
 
 #[napi]
-pub const EDGE_TYPES: [&'static str; 7] = [
+pub const EDGE_TYPES: [&str; 7] = [
   "context", "element", "property", "internal", "hidden", "shortcut", "weak",
 ];
 
 #[napi]
-pub const NODE_FIELDS: [&'static str; 7] = [
+pub const NODE_FIELDS: [&str; 7] = [
   "type",
   "name",
   "id",
@@ -37,4 +37,4 @@ pub const NODE_FIELDS: [&'static str; 7] = [
 ];
 
 #[napi]
-pub const EDGE_FIELDS: [&'static str; 3] = ["type", "name_or_index", "to_node"];
+pub const EDGE_FIELDS: [&str; 3] = ["type", "name_or_index", "to_node"];

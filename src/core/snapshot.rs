@@ -1,4 +1,6 @@
 use super::{EDGE_TYPES, NODE_TYPES};
+use petgraph::graph::NodeIndex;
+use petgraph::Graph;
 
 pub struct SnapshotNode {
   /// node index in the snapshot.nodes fields
@@ -19,11 +21,13 @@ pub struct SnapshotNode {
   pub from_edge_index: Vec<u64>,
   /// to edge index list
   pub to_edge_index: Vec<u64>,
+  /// graph node index
+  pub graph_node: NodeIndex,
 }
 
 impl SnapshotNode {
   pub fn get_node_type(&self) -> &'static str {
-    return NODE_TYPES[self.node_type_index];
+    NODE_TYPES[self.node_type_index]
   }
 }
 
@@ -46,11 +50,12 @@ pub struct SnapshotEdge {
 
 impl SnapshotEdge {
   pub fn get_edge_type(&self) -> &'static str {
-    return EDGE_TYPES[self.edge_type_index];
+    EDGE_TYPES[self.edge_type_index]
   }
 }
 
 pub struct SnapshotDeserialized {
   pub nodes: Vec<SnapshotNode>,
   pub edges: Vec<SnapshotEdge>,
+  pub graph: Graph<usize, usize>,
 }
