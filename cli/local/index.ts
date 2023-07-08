@@ -32,6 +32,9 @@ export class Local {
     this.server = express();
     this.server.get("/api/meta", (_, res) => this.api_meta(res));
     this.server.get("/api/statistics", (_, res) => this.api_statistics(res));
+    this.server.get("/api/node/:id", (req, res) =>
+      this.api_get_node_by_id(res, parseInt(req.params.id)),
+    );
     this.server.listen(port);
   }
 
@@ -43,5 +46,10 @@ export class Local {
   private api_statistics(res: Response) {
     const statistics = this.analyzer.statistics();
     res.json(statistics);
+  }
+
+  private api_get_node_by_id(res: Response, id: number) {
+    const node = this.analyzer.getNodeById(id);
+    res.json(node);
   }
 }

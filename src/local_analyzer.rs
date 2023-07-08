@@ -15,6 +15,14 @@ pub struct LocalAnalyzerStatistics {
   pub distribution: Vec<i64>,
 }
 
+#[napi(object)]
+pub struct LocalAnalyzerNodeInfo {
+  pub id: u32,
+  pub self_size: u32,
+  pub name: String,
+  pub node_type: String,
+}
+
 #[napi(js_name = "LocalAnalyzer")]
 pub struct LocalAnalyzer {
   meta: LocalAnalyzerMeta,
@@ -65,5 +73,21 @@ impl LocalAnalyzer {
       total_size: total_size as i64,
       distribution,
     }
+  }
+
+  #[napi]
+  pub fn get_node_by_id(&self, id: u32) -> Option<LocalAnalyzerNodeInfo> {
+    let node = self.snapshot.nodes.iter().find(|node| node.id == id as u64);
+
+    if let Some(node) = node {
+      return Some(LocalAnalyzerNodeInfo {
+        id: node.id as u32,
+        self_size: node.self_size as u32,
+        name: node.name.clone(),
+        node_type: node.get_node_type().to_string(),
+      });
+    }
+
+    None
   }
 }
