@@ -1,12 +1,12 @@
 use std::fs;
 
-use crate::core::NODE_TYPES_LENGTH;
+use crate::core::{SnapshotNode, NODE_TYPES_LENGTH};
 
 #[napi(object)]
 #[derive(Clone)]
 pub struct LocalAnalyzerMeta {
   pub path: String,
-  pub size: u32,
+  pub size: i64,
 }
 
 #[napi(object)]
@@ -17,8 +17,8 @@ pub struct LocalAnalyzerStatistics {
 
 #[napi(object)]
 pub struct LocalAnalyzerNodeInfo {
-  pub id: u32,
-  pub self_size: u32,
+  pub id: i64,
+  pub self_size: i64,
   pub name: String,
   pub node_type: String,
 }
@@ -40,7 +40,7 @@ impl LocalAnalyzer {
         snapshot,
         meta: LocalAnalyzerMeta {
           path,
-          size: slice.len() as u32,
+          size: slice.len() as i64,
         },
       };
     }
@@ -62,7 +62,7 @@ impl LocalAnalyzer {
 
     for node in self.snapshot.nodes.iter() {
       total_size += node.self_size;
-      distribution[node.node_type_index] += node.self_size as i64;
+      distribution[node.node_type_index] += (node.self_size) as i64;
     }
 
     LocalAnalyzerStatistics {
@@ -72,18 +72,32 @@ impl LocalAnalyzer {
   }
 
   #[napi]
-  pub fn get_node_by_id(&self, id: u32) -> Option<LocalAnalyzerNodeInfo> {
-    let node = self.snapshot.nodes.iter().find(|node| node.id == id as u64);
+  pub fn get_entries(&self) -> Vec<LocalAnalyzerNodeInfo> {
+    let entries: Vec<LocalAnalyzerNodeInfo> = self
+      .snapshot
+      .nodes
+      .iter()
+      .filter(|node| node.from_edge_index.len() < 2)
+      .filter_map(|node| self.get_node_by_idx(node.node_idx as usize))
+      .collect();
 
-    if let Some(node) = node {
-      return Some(LocalAnalyzerNodeInfo {
-        id: node.id as u32,
-        self_size: node.self_size as u32,
-        name: node.name.clone(),
-        node_type: node.get_node_type().to_string(),
-      });
+    entries
+  }
+
+  pub fn get_node_by_idx(&self, idx: usize) -> Option<LocalAnalyzerNodeInfo> {
+    if let Some(node) = self.snapshot.nodes.get(idx) {
+      return Some(self.convert_node_info(node));
     }
 
     None
+  }
+
+  fn convert_node_info(&self, node: &SnapshotNode) -> LocalAnalyzerNodeInfo {
+    LocalAnalyzerNodeInfo {
+      id: node.id as i64,
+      self_size: node.self_size as i64,
+      name: node.name.clone(),
+      node_type: node.get_node_type().to_string(),
+    }
   }
 }

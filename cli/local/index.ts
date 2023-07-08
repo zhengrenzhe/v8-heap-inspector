@@ -32,9 +32,8 @@ export class Local {
     this.server = express();
     this.server.get("/api/meta", (_, res) => this.api_meta(res));
     this.server.get("/api/statistics", (_, res) => this.api_statistics(res));
-    this.server.get("/api/node/:id", (req, res) =>
-      this.api_get_node_by_id(res, parseInt(req.params.id)),
-    );
+    this.server.get("/api/entries", (_, res) => this.api_get_entries(res));
+
     this.server.listen(port);
   }
 
@@ -48,8 +47,8 @@ export class Local {
     res.json(statistics);
   }
 
-  private api_get_node_by_id(res: Response, id: number) {
-    const node = this.analyzer.getNodeById(id);
-    res.json(node);
+  private api_get_entries(res: Response) {
+    const entries = this.analyzer.getEntries();
+    res.json(entries);
   }
 }

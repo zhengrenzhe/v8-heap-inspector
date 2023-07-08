@@ -1,6 +1,6 @@
 use super::{EDGE_TYPES, NODE_TYPES};
 use petgraph::graph::NodeIndex;
-use petgraph::Graph;
+use petgraph::{Directed, Graph};
 
 pub struct SnapshotNode {
   /// node index in the snapshot.nodes fields
@@ -57,5 +57,5 @@ impl SnapshotEdge {
 pub struct SnapshotDeserialized {
   pub nodes: Vec<SnapshotNode>,
   pub edges: Vec<SnapshotEdge>,
-  pub graph: Graph<usize, usize>,
+  pub graph: Graph<usize, usize, Directed>,
 }
