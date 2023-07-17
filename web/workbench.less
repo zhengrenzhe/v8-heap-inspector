@@ -5,6 +5,22 @@ body,
   height: 100%;
 }
 
+.divider {
+  flex-grow: 0;
+}
+
 .tab-root {
   height: 100%;
+  display: flex;
+  overflow: hidden;
+}
+
+.tree-item-size {
+  min-height: 0 !important;
+  height: 24px;
+}
+
+.tree-item {
+  content-visibility: auto;
+  contain-intrinsic-size: 24px;
 }

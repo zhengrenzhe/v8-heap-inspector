@@ -9,7 +9,12 @@ const App = () => {
   return (
     <FluentProvider
       theme={webLightTheme}
-      style={{ height: "100%", display: "flex", flexDirection: "column" }}
+      style={{
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        overflow: "hidden",
+      }}
     >
       <RecoilRoot>
         <Workbench />

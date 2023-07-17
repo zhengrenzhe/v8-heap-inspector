@@ -46,7 +46,7 @@ export const Workbench = () => {
           </Tab>
         ))}
       </TabList>
-      <Divider appearance="subtle" />
+      <Divider appearance="subtle" className="divider" />
       <div className="tab-root">
         {Tabs.map((t, idx) => (
           <t.render
