@@ -21,7 +21,7 @@ export class Local {
     this.analyzer = new LocalAnalyzer(filePath);
     const end = performance.now();
 
-    const meta = this.analyzer.meta();
+    const meta = this.analyzer.getMeta();
     console.log(
       chalk.green(
         `done ${meta.size} bytes ${((end - start) / 1000).toFixed(2)}s`,
@@ -33,25 +33,15 @@ export class Local {
     this.server = express();
 
     this.server.use(cors());
-    this.server.get("/api/meta", (_, res) => this.api_meta(res));
-    this.server.get("/api/statistics", (_, res) => this.api_statistics(res));
-    this.server.get("/api/entries", (_, res) => this.api_get_entries(res));
+    this.server.get("/api/get_all_constructors", (_, res) =>
+      this.api_get_all_constructors(res),
+    );
 
     this.server.listen(port);
   }
 
-  private api_meta(res: Response) {
-    const meta = this.analyzer.meta();
+  private api_get_all_constructors(res: Response) {
+    const meta = this.analyzer.getAllConstructors();
     res.json(meta);
-  }
-
-  private api_statistics(res: Response) {
-    const statistics = this.analyzer.statistics();
-    res.json(statistics);
-  }
-
-  private api_get_entries(res: Response) {
-    const entries = this.analyzer.getEntries();
-    res.json(entries);
   }
 }
