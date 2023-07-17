@@ -7,52 +7,56 @@ import {
   TabList,
 } from "@fluentui/react-components";
 import { atom, useRecoilState } from "recoil";
-import { SearchTab } from "./search/searchTab";
+
+import "./workbench.less";
+
+import { Constructors } from "./constructors";
+import { Statistics } from "./statistics";
+
+const Tabs = [Constructors, Statistics];
 
 const workbenchState = atom({
-  key: "workbench",
+  key: "workbenchState",
   default: {
-    items: ["search", "statistics"],
+    items: Tabs.map((t) => t.name),
     currentIndex: 0,
   },
 });
 
-const i18n: Record<string, string> = {
-  search: "搜索",
-  statistics: "统计",
-};
-
 export const Workbench = () => {
   const [state, setState] = useRecoilState(workbenchState);
 
-  const onTabSelect = (event: SelectTabEvent, data: SelectTabData) => {
+  const onTabSelect = (_: SelectTabEvent, data: SelectTabData) => {
     setState((old) => ({
       ...old,
-      currentIndex: old.items.findIndex((item) => item === data.value),
+      currentIndex: data.value as number,
     }));
   };
 
   return (
     <>
       <TabList
-        selectedValue={state.items[state.currentIndex]}
+        selectedValue={state.currentIndex}
         onTabSelect={onTabSelect}
         size="small"
       >
-        {state.items.map((item) => (
-          <Tab id={item} value={item} key={item}>
-            <span style={{ fontSize: 12 }}>{i18n[item]}</span>
+        {state.items.map((item, index) => (
+          <Tab id={item} value={index} key={item}>
+            <span style={{ fontSize: 12 }}>{item}</span>
           </Tab>
         ))}
       </TabList>
       <Divider appearance="subtle" />
       <div className="tab-root">
-        <SearchTab
-          style={{
-            display: state.currentIndex === 0 ? "block" : "none",
-            height: "100%",
-          }}
-        />
+        {Tabs.map((t, idx) => (
+          <t.render
+            key={t.name}
+            style={{
+              height: "100%",
+              display: idx === state.currentIndex ? "flex" : "none",
+            }}
+          />
+        ))}
       </div>
     </>
   );
