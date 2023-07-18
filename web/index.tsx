@@ -1,5 +1,4 @@
 import * as React from "react";
-import { FluentProvider, webLightTheme } from "@fluentui/react-components";
 import { createRoot } from "react-dom/client";
 import { RecoilRoot } from "recoil";
 
@@ -7,19 +6,9 @@ import { Workbench } from "./workbench";
 
 const App = () => {
   return (
-    <FluentProvider
-      theme={webLightTheme}
-      style={{
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-        overflow: "hidden",
-      }}
-    >
-      <RecoilRoot>
-        <Workbench />
-      </RecoilRoot>
-    </FluentProvider>
+    <RecoilRoot>
+      <Workbench />
+    </RecoilRoot>
   );
 };
 

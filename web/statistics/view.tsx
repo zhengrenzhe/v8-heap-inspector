@@ -1,5 +1,5 @@
-import React, { CSSProperties } from "react";
+import React from "react";
 
-export function StatisticsView(props: { style: CSSProperties }) {
-  return <div style={props.style}>StatisticsView</div>;
+export function StatisticsView() {
+  return <div className="tab-pane-content">StatisticsView</div>;
 }

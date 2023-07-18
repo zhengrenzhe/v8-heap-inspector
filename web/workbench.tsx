@@ -1,63 +1,71 @@
 import * as React from "react";
 import {
-  Divider,
-  SelectTabData,
-  SelectTabEvent,
-  Tab,
-  TabList,
-} from "@fluentui/react-components";
-import { atom, useRecoilState } from "recoil";
+  ActionIcon,
+  ColorScheme,
+  ColorSchemeProvider,
+  Tabs,
+} from "@mantine/core";
+import { MantineProvider } from "@mantine/core";
+import { MoonStars, Sun } from "tabler-icons-react";
 
 import "./workbench.less";
 
 import { Constructors } from "./constructors";
 import { Statistics } from "./statistics";
 
-const Tabs = [Constructors, Statistics];
-
-const workbenchState = atom({
-  key: "workbenchState",
-  default: {
-    items: Tabs.map((t) => t.name),
-    currentIndex: 0,
-  },
-});
+const TabsList = [Constructors, Statistics];
 
 export const Workbench = () => {
-  const [state, setState] = useRecoilState(workbenchState);
-
-  const onTabSelect = (_: SelectTabEvent, data: SelectTabData) => {
-    setState((old) => ({
-      ...old,
-      currentIndex: data.value as number,
-    }));
-  };
+  const [colorScheme, setColorScheme] = React.useState<ColorScheme>("dark");
+  const toggleColorScheme = (value?: ColorScheme) =>
+    setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
+  const dark = colorScheme === "dark";
 
   return (
-    <>
-      <TabList
-        selectedValue={state.currentIndex}
-        onTabSelect={onTabSelect}
-        size="small"
+    <ColorSchemeProvider
+      colorScheme={colorScheme}
+      toggleColorScheme={toggleColorScheme}
+    >
+      <MantineProvider
+        theme={{ colorScheme }}
+        withGlobalStyles
+        withNormalizeCSS
       >
-        {state.items.map((item, index) => (
-          <Tab id={item} value={index} key={item}>
-            <span style={{ fontSize: 12 }}>{item}</span>
-          </Tab>
-        ))}
-      </TabList>
-      <Divider appearance="subtle" className="divider" />
-      <div className="tab-root">
-        {Tabs.map((t, idx) => (
-          <t.render
-            key={t.name}
-            style={{
-              height: "100%",
-              display: idx === state.currentIndex ? "flex" : "none",
-            }}
-          />
-        ))}
-      </div>
-    </>
+        <Tabs
+          defaultValue={TabsList[0].name}
+          className="workbench-tabs"
+          color="teal"
+          variant="outline"
+        >
+          <Tabs.List position="center">
+            {TabsList.map((t) => (
+              <Tabs.Tab key={t.name} value={t.name}>
+                {t.name}
+              </Tabs.Tab>
+            ))}
+          </Tabs.List>
+
+          {TabsList.map((t) => (
+            <Tabs.Panel
+              key={t.name}
+              value={t.name}
+              className="workbench-tabs-tabpane"
+            >
+              <t.render />
+            </Tabs.Panel>
+          ))}
+        </Tabs>
+
+        <ActionIcon
+          variant="outline"
+          color={dark ? "yellow" : "blue"}
+          onClick={() => toggleColorScheme()}
+          title="Toggle color scheme"
+          style={{ position: "fixed", right: 2, top: 3 }}
+        >
+          {dark ? <Sun size="1.1rem" /> : <MoonStars size="1.1rem" />}
+        </ActionIcon>
+      </MantineProvider>
+    </ColorSchemeProvider>
   );
 };

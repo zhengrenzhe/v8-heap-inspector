@@ -1,7 +1,7 @@
 import { Divider } from "@fluentui/react-components";
 import { useRequest } from "ahooks";
 import axios from "axios";
-import React, { CSSProperties } from "react";
+import React from "react";
 import {
   Tree,
   TreeItem,
@@ -18,7 +18,7 @@ type Item = FlatTreeItemProps & {
   count: number;
 };
 
-export function ConstructorsView(props: { style: CSSProperties }) {
+export function ConstructorsView() {
   const { data } = useRequest<GetAllConstructorsReturnValue, any>(
     async () => (await axios.get(API_get_all_constructors)).data,
     {
@@ -37,10 +37,7 @@ export function ConstructorsView(props: { style: CSSProperties }) {
   );
 
   return (
-    <div
-      style={{ ...props.style, flexDirection: "row" }}
-      data-type="ConstructorsView"
-    >
+    <div className="tab-pane-content" data-type="ConstructorsView">
       <div style={{ height: "100%", width: 500, overflow: "auto" }}>
         <Tree
           {...flatTree.getTreeProps()}
