@@ -1,25 +1,14 @@
-import { Divider } from "@fluentui/react-components";
 import { useRequest } from "ahooks";
 import axios from "axios";
 import React from "react";
-import {
-  Tree,
-  TreeItem,
-  TreeItemLayout,
-  useFlatTree_unstable,
-  FlatTreeItemProps,
-} from "@fluentui/react-components/unstable";
+
 import { API_get_all_constructors } from "../api";
 import { GetAllConstructorsReturnValue } from "../../binding";
-
-type Item = FlatTreeItemProps & {
-  name: string;
-  selfSize: number;
-  count: number;
-};
+import { TableVirtuoso } from "react-virtuoso";
+import { useMantineTheme } from "@mantine/core";
 
 export function ConstructorsView() {
-  const { data } = useRequest<GetAllConstructorsReturnValue, any>(
+  const { data, loading } = useRequest<GetAllConstructorsReturnValue, any>(
     async () => (await axios.get(API_get_all_constructors)).data,
     {
       cacheKey: "GetAllConstructorsReturnValue",
@@ -27,50 +16,49 @@ export function ConstructorsView() {
     },
   );
 
-  const flatTree = useFlatTree_unstable(
-    (data?.constructors ?? []).map<Item>((c) => ({
-      value: c.name,
-      name: c.name,
-      selfSize: c.selfSize,
-      count: c.count,
-    })),
-  );
+  const theme = useMantineTheme();
+  const lineColor = theme.colors.gray[theme.colorScheme === "dark" ? 8 : 0];
 
   return (
     <div className="tab-pane-content" data-type="ConstructorsView">
-      <div style={{ height: "100%", width: 500, overflow: "auto" }}>
-        <Tree
-          {...flatTree.getTreeProps()}
-          aria-label="Tree"
-          style={{ overflowX: "hidden" }}
-        >
-          {Array.from(flatTree.items(), (flatTreeItem) => {
-            const { name, selfSize, count, ...treeItemProps } =
-              flatTreeItem.getTreeItemProps();
-            return (
-              <TreeItem
-                {...treeItemProps}
-                key={flatTreeItem.value}
-                className="tree-item tree-item-size"
-              >
-                <TreeItemLayout
-                  className="tree-item-size"
-                  style={{ width: "100%", justifyContent: "space-between" }}
-                  iconAfter={
-                    <div style={{ display: "flex", fontSize: 12 }}>
-                      <div>x{count}</div>
-                      <div style={{ marginLeft: 6 }}>{selfSize}</div>
-                    </div>
-                  }
-                >
-                  <div style={{ position: "relative" }}>{name}</div>
-                </TreeItemLayout>
-              </TreeItem>
-            );
-          })}
-        </Tree>
-      </div>
-      <Divider appearance="subtle" vertical style={{ flexGrow: 0 }} />
+      <TableVirtuoso
+        style={{
+          height: "100%",
+          width: 340,
+          borderRight: `1px solid ${lineColor}`,
+        }}
+        components={{
+          Table: ({ style, ...props }) => (
+            <table {...props} style={style} className="list-table" />
+          ),
+          TableRow: ({ style, ...props }) => (
+            <tr {...props} style={style} className="list-table-row" />
+          ),
+        }}
+        totalCount={data?.count || 0}
+        fixedItemHeight={24}
+        fixedHeaderContent={() => (
+          <tr
+            style={{
+              backgroundColor: lineColor,
+            }}
+          >
+            <th style={{ width: 200 }}>Names</th>
+            <th>Count</th>
+            <th>Self Size</th>
+          </tr>
+        )}
+        itemContent={(index) => {
+          const item = data?.constructors[index];
+          return (
+            <>
+              <td className="list-table-td-name">{item?.name}</td>
+              <td className="list-table-td-other">{item?.count}</td>
+              <td className="list-table-td-other">{item?.selfSize}</td>
+            </>
+          );
+        }}
+      />
     </div>
   );
 }
