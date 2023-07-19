@@ -16,9 +16,14 @@ import { Statistics } from "./statistics";
 const TabsList = [Constructors, Statistics];
 
 export const Workbench = () => {
-  const [colorScheme, setColorScheme] = React.useState<ColorScheme>("dark");
-  const toggleColorScheme = (value?: ColorScheme) =>
-    setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
+  const [colorScheme, setColorScheme] = React.useState<ColorScheme>(
+    (localStorage.getItem("theme") ?? "dark") as ColorScheme,
+  );
+  const toggleColorScheme = (value?: ColorScheme) => {
+    const newtheme = value || (colorScheme === "dark" ? "light" : "dark");
+    setColorScheme(newtheme);
+    localStorage.setItem("theme", newtheme);
+  };
   const dark = colorScheme === "dark";
 
   return (
@@ -36,6 +41,7 @@ export const Workbench = () => {
           className="workbench-tabs"
           color="teal"
           variant="outline"
+          style={{ display: "flex", flexDirection: "column" }}
         >
           <Tabs.List position="center">
             {TabsList.map((t) => (
