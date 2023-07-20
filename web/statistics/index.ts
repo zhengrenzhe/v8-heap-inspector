@@ -1,6 +1,6 @@
-import { StatisticsView } from "./view";
+// import { StatisticsView } from "./view";
 
-export const Statistics = {
-  name: "Statistics",
-  render: StatisticsView,
-};
+// export const Statistics = {
+//   name: "Statistics",
+//   render: StatisticsView,
+// };

@@ -199,3 +199,4 @@ Cargo.lock
 *.d.ts
 
 .idea
+.parcel-cache
