@@ -1,5 +1,12 @@
 import * as React from "react";
 import { createRoot } from "react-dom/client";
+import "reflect-metadata";
+import { configure } from "mobx";
+
+configure({
+  useProxies: "always",
+  enforceActions: "always",
+});
 
 import { Workbench } from "./workbench";
 
