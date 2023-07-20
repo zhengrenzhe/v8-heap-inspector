@@ -5,19 +5,30 @@ import { Tab, Tabs } from "@leafygreen-ui/tabs";
 import "./workbench.less";
 import { useService } from "./di";
 import { WorkbenchService } from "./workbenchModel";
+import { Constructors } from "./constructors";
+import { Statistics } from "./statistics";
+
+const tabList = [Constructors, Statistics];
 
 export const Workbench = observer(() => {
   const srv = useService(WorkbenchService);
-  console.log(srv.model);
 
   return (
     <Tabs
       selected={srv.model.tabIndex}
-      setSelected={(v) => srv.model.setTabIndex(v)}
+      setSelected={srv.model.setTabIndex}
       aria-label="tab"
     >
-      <Tab name="First Tab">Tab 1</Tab>
-      <Tab name="Second Tab">Tab 2</Tab>
+      <Tab
+        className="tab-logo"
+        disabled
+        name={<img src="https://v8.dev/_img/v8-outline.svg" />}
+      />
+      {tabList.map((t) => (
+        <Tab name={t.name} key={t.name}>
+          <t.render />
+        </Tab>
+      ))}
     </Tabs>
   );
 });

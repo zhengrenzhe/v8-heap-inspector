@@ -7,11 +7,11 @@ class WorkbenchModel {
     makeAutoObservable(this);
   }
 
-  public tabIndex = 0;
+  public tabIndex = 1;
 
-  public setTabIndex(index: number) {
+  public setTabIndex = (index: number) => {
     this.tabIndex = index;
-  }
+  };
 }
 
 @injectable()

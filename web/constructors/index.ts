@@ -1,6 +1,6 @@
-// import { ConstructorsView } from "./view";
+import { ConstructorsView } from "./view";
 
-// export const Constructors = {
-//   name: "Constructors",
-//   render: ConstructorsView,
-// };
+export const Constructors = {
+  name: "Constructors",
+  render: ConstructorsView,
+};
