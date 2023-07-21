@@ -8,9 +8,15 @@ dependencies:
   '@leafygreen-ui/card':
     specifier: ^10.0.0
     version: 10.0.0(@leafygreen-ui/leafygreen-provider@3.1.3)(react@18.2.0)
+  '@leafygreen-ui/icon-button':
+    specifier: ^15.0.13
+    version: 15.0.13(@leafygreen-ui/leafygreen-provider@3.1.3)(react@18.2.0)
   '@leafygreen-ui/tabs':
     specifier: ^11.1.3
     version: 11.1.3(@leafygreen-ui/leafygreen-provider@3.1.3)(react-dom@18.2.0)(react@18.2.0)
+  '@leafygreen-ui/text-input':
+    specifier: ^12.1.15
+    version: 12.1.15(@leafygreen-ui/leafygreen-provider@3.1.3)(react@18.2.0)
   '@leafygreen-ui/typography':
     specifier: ^16.5.1
     version: 16.5.1(@leafygreen-ui/leafygreen-provider@3.1.3)(react@18.2.0)
@@ -47,6 +53,12 @@ dependencies:
   react-dom:
     specifier: ^18.2.0
     version: 18.2.0(react@18.2.0)
+  react-highlight-words:
+    specifier: ^0.20.0
+    version: 0.20.0(react@18.2.0)
+  react-icons:
+    specifier: ^4.10.1
+    version: 4.10.1(react@18.2.0)
   react-virtuoso:
     specifier: ^4.4.1
     version: 4.4.1(react-dom@18.2.0)(react@18.2.0)
@@ -299,6 +311,23 @@ packages:
       lodash: 4.17.21
     dev: false
 
+  /@leafygreen-ui/icon-button@15.0.13(@leafygreen-ui/leafygreen-provider@3.1.3)(react@18.2.0):
+    resolution: {integrity: sha512-1P0BoVGnFzxLZ10g8+JhJvJ2ZNKfAk9NvKsXQHOkGpQTcNXI5mPcree8ZizwiOzBZuIDZtRZ5Gc9MdJmTwcdcg==}
+    peerDependencies:
+      '@leafygreen-ui/leafygreen-provider': ^3.1.3
+    dependencies:
+      '@leafygreen-ui/a11y': 1.4.4(react@18.2.0)
+      '@leafygreen-ui/box': 3.1.4
+      '@leafygreen-ui/emotion': 4.0.4
+      '@leafygreen-ui/icon': 11.19.0
+      '@leafygreen-ui/leafygreen-provider': 3.1.3(react@18.2.0)
+      '@leafygreen-ui/lib': 10.4.0(react@18.2.0)
+      '@leafygreen-ui/palette': 4.0.4
+      '@leafygreen-ui/tokens': 2.1.1
+    transitivePeerDependencies:
+      - react
+    dev: false
+
   /@leafygreen-ui/icon@11.19.0:
     resolution: {integrity: sha512-TznV6+af/NLjyjEbuBk1oZFr+WjBw7Cz2gX560ehF5olG3lP4IM0087Q//3Pf+ZhmI5bR90JTCZaS0M7R1fpxg==}
     dependencies:
@@ -364,6 +393,23 @@ packages:
     transitivePeerDependencies:
       - react
       - react-dom
+    dev: false
+
+  /@leafygreen-ui/text-input@12.1.15(@leafygreen-ui/leafygreen-provider@3.1.3)(react@18.2.0):
+    resolution: {integrity: sha512-G9hRfALWKI/0jfR/wj0Vf8TLH+xrtr/cCTZoPeTfZYXWjKiQ+i1zOAWe+jCxFrg4t0eY6fAAVFfPrH4WAjpQTQ==}
+    peerDependencies:
+      '@leafygreen-ui/leafygreen-provider': ^3.1.3
+    dependencies:
+      '@leafygreen-ui/emotion': 4.0.4
+      '@leafygreen-ui/hooks': 7.7.5
+      '@leafygreen-ui/icon': 11.19.0
+      '@leafygreen-ui/leafygreen-provider': 3.1.3(react@18.2.0)
+      '@leafygreen-ui/lib': 10.4.0(react@18.2.0)
+      '@leafygreen-ui/palette': 4.0.4
+      '@leafygreen-ui/tokens': 2.1.1
+      '@leafygreen-ui/typography': 16.5.1(@leafygreen-ui/leafygreen-provider@3.1.3)(react@18.2.0)
+    transitivePeerDependencies:
+      - react
     dev: false
 
   /@leafygreen-ui/tokens@2.1.1:
@@ -2260,6 +2306,10 @@ packages:
       function-bind: 1.1.1
     dev: false
 
+  /highlight-words-core@1.2.2:
+    resolution: {integrity: sha512-BXUKIkUuh6cmmxzi5OIbUJxrG8OAk2MqoL1DtO3Wo9D2faJg2ph5ntyuQeLqaHJmzER6H5tllCDA9ZnNe9BVGg==}
+    dev: false
+
   /html-tokenize@2.0.1:
     resolution: {integrity: sha512-QY6S+hZ0f5m1WT8WffYN+Hg+xm/w5I8XeUcAq/ZYP5wVC8xbKi4Whhru3FtrAebD5EhBW8rmFzkDI6eCAuFe2w==}
     hasBin: true
@@ -2637,6 +2687,10 @@ packages:
   /media-typer@0.3.0:
     resolution: {integrity: sha1-hxDXrwqmJvj/+hzgAWhUUmMlV0g=}
     engines: {node: '>= 0.6'}
+    dev: false
+
+  /memoize-one@4.0.3:
+    resolution: {integrity: sha512-QmpUu4KqDmX0plH4u+tf0riMc1KHE1+lw95cMrLlXQAFOx/xnBtwhZ52XJxd9X2O6kwKBqX32kmhbhlobD0cuw==}
     dev: false
 
   /merge-descriptors@1.0.1:
@@ -3062,6 +3116,25 @@ packages:
   /react-error-overlay@6.0.9:
     resolution: {integrity: sha512-nQTTcUu+ATDbrSD1BZHr5kgSD4oF8OFjxun8uAaL8RwPBacGBNPf/yAuVVdx17N8XNzRDMrZ9XcKZHCjPW+9ew==}
     dev: true
+
+  /react-highlight-words@0.20.0(react@18.2.0):
+    resolution: {integrity: sha512-asCxy+jCehDVhusNmCBoxDf2mm1AJ//D+EzDx1m5K7EqsMBIHdZ5G4LdwbSEXqZq1Ros0G0UySWmAtntSph7XA==}
+    peerDependencies:
+      react: ^0.14.0 || ^15.0.0 || ^16.0.0-0 || ^17.0.0-0 || ^18.0.0-0
+    dependencies:
+      highlight-words-core: 1.2.2
+      memoize-one: 4.0.3
+      prop-types: 15.8.1
+      react: 18.2.0
+    dev: false
+
+  /react-icons@4.10.1(react@18.2.0):
+    resolution: {integrity: sha512-/ngzDP/77tlCfqthiiGNZeYFACw85fUjZtLbedmJ5DTlNDIwETxhwBzdOJ21zj4iJdvc0J3y7yOsX3PpxAJzrw==}
+    peerDependencies:
+      react: '*'
+    dependencies:
+      react: 18.2.0
+    dev: false
 
   /react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}

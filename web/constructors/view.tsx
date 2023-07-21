@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import Card from "@leafygreen-ui/card";
 import { Allotment } from "allotment";
+import { H1, H2 } from "@leafygreen-ui/typography";
 import "allotment/dist/style.css";
 
 import "./style.less";
 import { ConstructorsItems } from "./ConstructorsItems";
-import { H1, H2 } from "@leafygreen-ui/typography";
 
 export function ConstructorsView() {
   return (

@@ -54,7 +54,9 @@
   "packageManager": "yarn@3.6.1",
   "dependencies": {
     "@leafygreen-ui/card": "^10.0.0",
+    "@leafygreen-ui/icon-button": "^15.0.13",
     "@leafygreen-ui/tabs": "^11.1.3",
+    "@leafygreen-ui/text-input": "^12.1.15",
     "@leafygreen-ui/typography": "^16.5.1",
     "ahooks": "^3.7.8",
     "allotment": "^1.19.2",
@@ -67,6 +69,8 @@
     "mobx-react": "^9.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-highlight-words": "^0.20.0",
+    "react-icons": "^4.10.1",
     "react-virtuoso": "^4.4.1",
     "reflect-metadata": "^0.1.13",
     "typedi": "^0.10.0"
