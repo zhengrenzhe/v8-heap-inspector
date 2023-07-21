@@ -5,6 +5,7 @@ import "allotment/dist/style.css";
 
 import "./style.less";
 import { ConstructorsItems } from "./ConstructorsItems";
+import { H1, H2 } from "@leafygreen-ui/typography";
 
 export function ConstructorsView() {
   return (
@@ -15,7 +16,8 @@ export function ConstructorsView() {
           preferredSize={340}
           className="constructors-col"
         >
-          <Card darkMode={false} className="constructors-card">
+          <Card className="constructors-card">
+            <H2 className="constructors-title">Constructors</H2>
             <ConstructorsItems />
           </Card>
         </Allotment.Pane>
@@ -24,10 +26,16 @@ export function ConstructorsView() {
           preferredSize={340}
           className="constructors-col"
         >
-          <Card>Pane 1</Card>
+          <Card className="constructors-card">
+            <H2 className="constructors-title">Instances</H2>
+            Pane 1
+          </Card>
         </Allotment.Pane>
         <Allotment.Pane minSize={300} className="constructors-col">
-          <Card>Pane 2</Card>
+          <Card className="constructors-card">
+            <H2 className="constructors-title">Reference Graph</H2>
+            Pane 2
+          </Card>
         </Allotment.Pane>
       </Allotment>
     </div>
