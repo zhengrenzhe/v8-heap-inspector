@@ -7,6 +7,8 @@ import { useRequest } from "ahooks";
 import { GetAllConstructorsReturnValue } from "../../binding";
 
 export function ConstructorsView() {
+  return "ConstructorsView";
+
   const { data } = useRequest<GetAllConstructorsReturnValue, any>(
     async () => (await axios.get(API_get_all_constructors)).data,
     {

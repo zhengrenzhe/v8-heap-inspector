@@ -18,6 +18,7 @@ export const Workbench = observer(() => {
       selected={srv.model.tabIndex}
       setSelected={srv.model.setTabIndex}
       aria-label="tab"
+      className="workbench-main"
     >
       <Tab
         className="tab-logo"
@@ -25,8 +26,15 @@ export const Workbench = observer(() => {
         name={<img src="https://v8.dev/_img/v8-outline.svg" />}
       />
       {tabList.map((t) => (
-        <Tab name={t.name} key={t.name}>
-          <t.render />
+        <Tab
+          name={t.name}
+          key={t.name}
+          data-tab={t.name}
+          className="workbench-tab-pane"
+        >
+          <div className="workbench-tab-pane-wrap">
+            <t.render />
+          </div>
         </Tab>
       ))}
     </Tabs>

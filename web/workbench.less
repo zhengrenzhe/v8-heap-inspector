@@ -1,8 +1,32 @@
 html,
 body,
-#app-root {
+#app-root,
+.workbench-main {
   margin: 0;
   height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.workbench-main > div:last-child {
+  flex: 1;
+  overflow: clip;
+}
+
+div.workbench-tab-pane {
+  display: none;
+  &:has(.workbench-tab-pane-wrap) {
+    display: flex;
+    height: 100%;
+    overflow: auto;
+  }
+}
+
+.workbench-tab-pane-wrap {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  overflow: clip;
 }
 
 .tab-logo {
