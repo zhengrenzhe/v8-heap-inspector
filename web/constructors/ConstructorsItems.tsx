@@ -5,6 +5,7 @@ import { TableVirtuoso } from "react-virtuoso";
 import { API_get_all_constructors } from "../api";
 import { useRequest } from "ahooks";
 import { GetAllConstructorsReturnValue } from "../../binding";
+import { Body, InlineCode } from "@leafygreen-ui/typography";
 
 export function ConstructorsItems() {
   const { data } = useRequest<GetAllConstructorsReturnValue, any>(
@@ -48,9 +49,15 @@ export function ConstructorsItems() {
         fixedItemHeight={24}
         fixedHeaderContent={() => (
           <tr>
-            <th>Names</th>
-            <th style={{ width: 40 }}>Count</th>
-            <th style={{ width: 70 }}>Self Size</th>
+            <th>
+              <Body weight="medium">Names</Body>
+            </th>
+            <th style={{ width: 40 }}>
+              <Body weight="medium">Count</Body>
+            </th>
+            <th style={{ width: 70 }}>
+              <Body weight="medium">Self Size</Body>
+            </th>
           </tr>
         )}
         itemContent={(index) => {
@@ -58,16 +65,16 @@ export function ConstructorsItems() {
           return (
             <>
               <td className="list-table-td-name" title={item.name}>
-                {item.name}
+                <InlineCode>{item.name}</InlineCode>
               </td>
               <td className="list-table-td-other" title={item.count.toString()}>
-                {item.count}
+                <Body>{item.count}</Body>
               </td>
               <td
                 className="list-table-td-other"
                 title={item.selfSize.toString()}
               >
-                {item.selfSize}
+                <Body>{item.selfSize}</Body>
               </td>
             </>
           );
