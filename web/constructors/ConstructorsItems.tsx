@@ -7,7 +7,6 @@ import IconButton from "@leafygreen-ui/icon-button";
 import TextInput from "@leafygreen-ui/text-input";
 import Highlighter from "react-highlight-words";
 import { useRequest } from "ahooks";
-import bytes, { Unit } from "bytes";
 
 import { API_get_all_constructors } from "../api";
 import { GetAllConstructorsReturnValue } from "../../binding";
@@ -22,8 +21,8 @@ export function ConstructorsItems() {
   );
 
   const [showFilter, setShowFilter] = useState(false);
-  const [sortBySize, setSortBySize] = useState(false);
   const [filterName, setFilterName] = useState("");
+  const [sortBySize, setSortBySize] = useState(false);
 
   let constructors = (data?.constructors || [])
     .filter((c) => c.name.toLowerCase().includes(filterName.toLowerCase()))
@@ -72,6 +71,12 @@ export function ConstructorsItems() {
           placeholder="filter by constructor name"
           autoFocus
           onChange={(e) => setFilterName(e.target.value.trim())}
+          onKeyDown={(e) => {
+            if (e.key === "Escape") {
+              setFilterName("");
+              setShowFilter(false);
+            }
+          }}
         />
       )}
       <TableVirtuoso
