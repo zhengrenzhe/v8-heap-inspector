@@ -64,7 +64,7 @@ export function ConstructorsItems() {
       </div>
       {showFilter && (
         <TextInput
-          aria-label="filter"
+          aria-labelledby="filter"
           sizeVariant="xsmall"
           baseFontSize={13}
           style={{ margin: "6px 0" }}
