@@ -21,9 +21,6 @@ export function ConstructorsItems() {
     },
   );
 
-  const units: Unit[] = ["B", "KB", "MB", "GB"];
-  const [unitIndex, setUnitIndex] = useState(0);
-  const nextUnitIndex = unitIndex + 1 >= units.length ? 0 : unitIndex + 1;
   const [showFilter, setShowFilter] = useState(false);
   const [sortBySize, setSortBySize] = useState(false);
   const [filterName, setFilterName] = useState("");
@@ -64,13 +61,6 @@ export function ConstructorsItems() {
           style={{ margin: 4 }}
         >
           <BsSortDown />
-        </IconButton>
-        <IconButton
-          aria-label="filter"
-          title={`change unit to ${units[nextUnitIndex]}`}
-          onClick={() => setUnitIndex(nextUnitIndex)}
-        >
-          <Body weight="medium">{units[nextUnitIndex]}</Body>
         </IconButton>
       </div>
       {showFilter && (
@@ -132,13 +122,7 @@ export function ConstructorsItems() {
                 className="list-table-td-other"
                 title={item.selfSize.toString()}
               >
-                <Body>
-                  {bytes.format(item.selfSize, {
-                    decimalPlaces: 0,
-                    unit: units[unitIndex],
-                    thousandsSeparator: ",",
-                  })}
-                </Body>
+                <Body>{item.selfSize}</Body>
               </td>
             </>
           );
