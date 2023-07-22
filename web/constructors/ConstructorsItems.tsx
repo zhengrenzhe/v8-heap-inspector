@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { TableVirtuoso } from "react-virtuoso";
-import { BsSortDown, BsFilterCircle } from "react-icons/bs";
+import { BsSortDown, BsFilterCircle, BsRecycle } from "react-icons/bs";
 import { Body, InlineCode } from "@leafygreen-ui/typography";
 import IconButton from "@leafygreen-ui/icon-button";
 import TextInput from "@leafygreen-ui/text-input";
 import Highlighter from "react-highlight-words";
+import { useRequest } from "ahooks";
+import bytes, { Unit } from "bytes";
 
 import { API_get_all_constructors } from "../api";
-import { useRequest } from "ahooks";
 import { GetAllConstructorsReturnValue } from "../../binding";
 
 export function ConstructorsItems() {
@@ -20,6 +21,9 @@ export function ConstructorsItems() {
     },
   );
 
+  const units: Unit[] = ["B", "KB", "MB", "GB"];
+  const [unitIndex, setUnitIndex] = useState(0);
+  const nextUnitIndex = unitIndex + 1 >= units.length ? 0 : unitIndex + 1;
   const [showFilter, setShowFilter] = useState(false);
   const [sortBySize, setSortBySize] = useState(false);
   const [filterName, setFilterName] = useState("");
@@ -49,7 +53,6 @@ export function ConstructorsItems() {
           title="filter by name"
           active={showFilter}
           onClick={() => setShowFilter(!showFilter)}
-          style={{ marginRight: 4 }}
         >
           <BsFilterCircle />
         </IconButton>
@@ -58,8 +61,16 @@ export function ConstructorsItems() {
           title="sory by self size"
           active={sortBySize}
           onClick={() => setSortBySize(!sortBySize)}
+          style={{ margin: 4 }}
         >
           <BsSortDown />
+        </IconButton>
+        <IconButton
+          aria-label="filter"
+          title={`change unit to ${units[nextUnitIndex]}`}
+          onClick={() => setUnitIndex(nextUnitIndex)}
+        >
+          <Body weight="medium">{units[nextUnitIndex]}</Body>
         </IconButton>
       </div>
       {showFilter && (
@@ -96,7 +107,7 @@ export function ConstructorsItems() {
             <th style={{ width: 60 }}>
               <Body weight="medium">Count</Body>
             </th>
-            <th style={{ width: 70 }}>
+            <th style={{ width: 80 }}>
               <Body weight="medium">Self Size</Body>
             </th>
           </tr>
@@ -121,7 +132,13 @@ export function ConstructorsItems() {
                 className="list-table-td-other"
                 title={item.selfSize.toString()}
               >
-                <Body>{item.selfSize}</Body>
+                <Body>
+                  {bytes.format(item.selfSize, {
+                    decimalPlaces: 0,
+                    unit: units[unitIndex],
+                    thousandsSeparator: ",",
+                  })}
+                </Body>
               </td>
             </>
           );
