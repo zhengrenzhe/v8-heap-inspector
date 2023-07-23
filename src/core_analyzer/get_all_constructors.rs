@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::core::{SnapshotDeserialized, NODE_TYPE_NATIVE, NODE_TYPE_OBJECT};
+use crate::core::SnapshotDeserialized;
 
 #[napi(object)]
 pub struct ConstructorItemDetailReturnValue {
@@ -16,25 +16,23 @@ pub struct GetAllConstructorsReturnValue {
 }
 
 pub fn get_all_constructors(s: &SnapshotDeserialized) -> GetAllConstructorsReturnValue {
-  let mut constructors: HashMap<&String, ConstructorItemDetailReturnValue> = HashMap::new();
+  let mut constructors: HashMap<String, ConstructorItemDetailReturnValue> = HashMap::new();
 
   for node in s.nodes.iter() {
-    let node_type = node.get_node_type();
-    if node_type == NODE_TYPE_OBJECT || node_type == NODE_TYPE_NATIVE {
-      if constructors.contains_key(&node.name) {
-        let v = constructors.get_mut(&node.name).unwrap();
-        v.count += 1;
-        v.self_size += node.self_size as i64;
-      } else {
-        constructors.insert(
-          &node.name,
-          ConstructorItemDetailReturnValue {
-            name: node.name.clone(),
-            count: 1,
-            self_size: node.self_size as i64,
-          },
-        );
-      }
+    let cls = &node.get_node_cls_name();
+    if constructors.contains_key(cls) {
+      let v: &mut ConstructorItemDetailReturnValue = constructors.get_mut(cls).unwrap();
+      v.count += 1;
+      v.self_size += node.self_size as i64;
+    } else {
+      constructors.insert(
+        cls.to_owned(),
+        ConstructorItemDetailReturnValue {
+          name: cls.clone(),
+          count: 1,
+          self_size: node.self_size as i64,
+        },
+      );
     }
   }
 

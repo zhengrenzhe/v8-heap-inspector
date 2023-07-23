@@ -1,4 +1,6 @@
-use super::{EDGE_TYPES, NODE_TYPES};
+use super::{
+  EDGE_TYPES, NODE_TYPES, NODE_TYPE_CODE, NODE_TYPE_HIDDEN, NODE_TYPE_NATIVE, NODE_TYPE_OBJECT,
+};
 use petgraph::graph::NodeIndex;
 use petgraph::{Directed, Graph};
 
@@ -26,8 +28,26 @@ pub struct SnapshotNode {
 }
 
 impl SnapshotNode {
-  pub fn get_node_type(&self) -> &'static str {
+  pub fn get_node_type(&self) -> &str {
     NODE_TYPES[self.node_type_index]
+  }
+
+  pub fn get_node_cls_name(&self) -> String {
+    let node_type = self.get_node_type();
+
+    if node_type == NODE_TYPE_HIDDEN {
+      return "(system)".to_string();
+    }
+
+    if node_type == NODE_TYPE_NATIVE || node_type == NODE_TYPE_OBJECT {
+      return self.name.to_string();
+    }
+
+    if node_type == NODE_TYPE_CODE {
+      return "(compiled code)".to_string();
+    }
+
+    vec!["(", node_type, ")"].join("")
   }
 }
 

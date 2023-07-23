@@ -13,7 +13,7 @@ export function ConstructorsView() {
       <Allotment separator={false}>
         <Allotment.Pane
           minSize={300}
-          preferredSize={340}
+          preferredSize={"40%"}
           className="constructors-col"
         >
           <Card className="constructors-card">
@@ -22,8 +22,8 @@ export function ConstructorsView() {
           </Card>
         </Allotment.Pane>
         <Allotment.Pane
-          minSize={300}
-          preferredSize={340}
+          minSize={200}
+          preferredSize={300}
           className="constructors-col"
         >
           <Card className="constructors-card">
@@ -31,7 +31,7 @@ export function ConstructorsView() {
             Pane 1
           </Card>
         </Allotment.Pane>
-        <Allotment.Pane minSize={300} className="constructors-col">
+        <Allotment.Pane className="constructors-col">
           <Card className="constructors-card">
             <H2 className="constructors-title">Reference Graph</H2>
             Pane 2
