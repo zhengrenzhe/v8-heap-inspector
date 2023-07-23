@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import axios from "axios";
 import { TableVirtuoso } from "react-virtuoso";
 import { BsSortDown, BsFilterCircle } from "react-icons/bs";
@@ -13,8 +13,6 @@ import { CopyToClipboard } from "react-copy-to-clipboard";
 
 import { API_get_all_constructors } from "../api";
 import { GetAllConstructorsReturnValue } from "../../binding";
-import { useRef } from "react";
-import Tooltip from "@leafygreen-ui/tooltip";
 
 function Copy(props: { value: string; cls: string }) {
   const [copied, setCopied] = useState(false);

@@ -62,6 +62,7 @@
     "@leafygreen-ui/typography": "^16.5.1",
     "@types/bytes": "^3.1.1",
     "@types/lodash": "^4.14.195",
+    "@types/react-copy-to-clipboard": "^5.0.4",
     "@types/react-highlight-words": "^0.16.4",
     "ahooks": "^3.7.8",
     "allotment": "^1.19.2",
