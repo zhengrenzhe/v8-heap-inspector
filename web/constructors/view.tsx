@@ -13,7 +13,7 @@ export function ConstructorsView() {
       <Allotment separator={false}>
         <Allotment.Pane
           minSize={300}
-          preferredSize={"40%"}
+          preferredSize={450}
           className="constructors-col"
         >
           <Card className="constructors-card">

@@ -46,7 +46,6 @@
 }
 
 .list-table-row {
-  cursor: pointer;
   height: 24px;
 }
 
@@ -55,6 +54,24 @@
   text-overflow: ellipsis;
   padding-left: 6px;
   white-space: nowrap;
+  display: flex;
+  align-items: center;
+
+  .list-table-td-name-copy {
+    margin-left: 4px;
+    line-height: 1;
+    font-size: 0;
+    cursor: pointer;
+    display: none;
+    svg {
+      font-size: 13px;
+    }
+  }
+  &:hover {
+    .list-table-td-name-copy {
+      display: initial;
+    }
+  }
 }
 
 .list-table-td-other {

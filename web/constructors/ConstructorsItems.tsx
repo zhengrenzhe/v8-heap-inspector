@@ -1,15 +1,42 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { TableVirtuoso } from "react-virtuoso";
-import { BsSortDown, BsFilterCircle, BsRecycle } from "react-icons/bs";
+import { BsSortDown, BsFilterCircle } from "react-icons/bs";
+import { AiOutlineCopy, AiOutlineCheck } from "react-icons/ai";
 import { Body, InlineCode } from "@leafygreen-ui/typography";
 import IconButton from "@leafygreen-ui/icon-button";
 import TextInput from "@leafygreen-ui/text-input";
+import { palette } from "@leafygreen-ui/palette";
 import Highlighter from "react-highlight-words";
 import { useRequest } from "ahooks";
+import { CopyToClipboard } from "react-copy-to-clipboard";
 
 import { API_get_all_constructors } from "../api";
 import { GetAllConstructorsReturnValue } from "../../binding";
+import { useRef } from "react";
+import Tooltip from "@leafygreen-ui/tooltip";
+
+function Copy(props: { value: string; cls: string }) {
+  const [copied, setCopied] = useState(false);
+  const timer = useRef<number>();
+
+  return (
+    <CopyToClipboard
+      text={props.value}
+      onCopy={() => {
+        window.clearTimeout(timer.current);
+        setCopied(true);
+        timer.current = window.setTimeout(() => {
+          setCopied(false);
+        }, 3000);
+      }}
+    >
+      <span className={props.cls}>
+        {copied ? <AiOutlineCheck /> : <AiOutlineCopy />}
+      </span>
+    </CopyToClipboard>
+  );
+}
 
 export function ConstructorsItems() {
   const { data } = useRequest<GetAllConstructorsReturnValue, any>(
@@ -89,7 +116,15 @@ export function ConstructorsItems() {
             <table {...props} style={style} className="list-table" />
           ),
           TableRow: ({ style, ...props }) => (
-            <tr {...props} style={style} className="list-table-row" />
+            <tr
+              {...props}
+              style={{
+                ...style,
+                backgroundColor:
+                  props["data-index"] % 2 ? palette.gray.light3 : undefined,
+              }}
+              className="list-table-row"
+            />
           ),
         }}
         totalCount={constructorsLength}
@@ -119,6 +154,7 @@ export function ConstructorsItems() {
                     textToHighlight={item.name}
                   />
                 </InlineCode>
+                <Copy value={item.name} cls="list-table-td-name-copy" />
               </td>
               <td className="list-table-td-other" title={item.count.toString()}>
                 <Body>{item.count}</Body>
