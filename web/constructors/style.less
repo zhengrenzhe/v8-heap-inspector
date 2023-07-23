@@ -57,7 +57,8 @@
   display: flex;
   align-items: center;
 
-  .list-table-td-name-copy {
+  .list-table-td-name-copy,
+  .list-table-td-name-inspect {
     margin-left: 4px;
     line-height: 1;
     font-size: 0;
@@ -67,8 +68,13 @@
       font-size: 13px;
     }
   }
+  .list-table-td-name-inspect {
+    font-size: 13px;
+  }
+
   &:hover {
-    .list-table-td-name-copy {
+    .list-table-td-name-copy,
+    .list-table-td-name-inspect {
       display: initial;
     }
   }

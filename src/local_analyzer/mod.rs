@@ -1,6 +1,9 @@
 use std::fs;
 
-use crate::core_analyzer::{get_all_constructors, GetAllConstructorsReturnValue};
+use crate::core_analyzer::{
+  get_all_constructors, get_nodes_abstract_info_by_constructor_name, GetAllConstructorsReturnValue,
+  NodeAbstractInfoReturnValue,
+};
 
 #[napi(object)]
 #[derive(Clone)]
@@ -42,5 +45,13 @@ impl LocalAnalyzer {
   #[napi]
   pub fn get_all_constructors(&self) -> GetAllConstructorsReturnValue {
     get_all_constructors(&self.snapshot)
+  }
+
+  #[napi]
+  pub fn get_nodes_abstract_info_by_constructor_name(
+    &self,
+    constructor_name: String,
+  ) -> Vec<NodeAbstractInfoReturnValue> {
+    get_nodes_abstract_info_by_constructor_name(&self.snapshot, &constructor_name)
   }
 }

@@ -1,8 +1,9 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useCallback } from "react";
 import axios from "axios";
 import { TableVirtuoso } from "react-virtuoso";
 import { BsSortDown, BsFilterCircle } from "react-icons/bs";
 import { AiOutlineCopy, AiOutlineCheck } from "react-icons/ai";
+import { VscInspect } from "react-icons/vsc";
 import { Body, InlineCode } from "@leafygreen-ui/typography";
 import IconButton from "@leafygreen-ui/icon-button";
 import TextInput from "@leafygreen-ui/text-input";
@@ -11,7 +12,10 @@ import Highlighter from "react-highlight-words";
 import { useRequest } from "ahooks";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 
-import { API_get_all_constructors } from "../api";
+import {
+  API_get_all_constructors,
+  API_get_nodes_abstract_info_by_constructor_name,
+} from "../api";
 import { GetAllConstructorsReturnValue } from "../../binding";
 
 function Copy(props: { value: string; cls: string }) {
@@ -44,6 +48,10 @@ export function ConstructorsItems() {
       staleTime: Number.MAX_SAFE_INTEGER,
     },
   );
+
+  const inspect_cls = useCallback((name: string) => {
+    axios.get(API_get_nodes_abstract_info_by_constructor_name(name));
+  }, []);
 
   const [showFilter, setShowFilter] = useState(false);
   const [filterName, setFilterName] = useState("");
@@ -153,6 +161,10 @@ export function ConstructorsItems() {
                   />
                 </InlineCode>
                 <Copy value={item.name} cls="list-table-td-name-copy" />
+                <VscInspect
+                  onClick={() => inspect_cls(item.name)}
+                  className="list-table-td-name-inspect"
+                />
               </td>
               <td className="list-table-td-other" title={item.count.toString()}>
                 <Body>{item.count}</Body>

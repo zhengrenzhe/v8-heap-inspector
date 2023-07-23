@@ -1,6 +1,6 @@
 import { statSync } from "node:fs";
 import chalk from "chalk";
-import express, { Express, Response } from "express";
+import express, { Express, Response, Request } from "express";
 import cors from "cors";
 
 import { LocalAnalyzer } from "../../binding";
@@ -36,12 +36,26 @@ export class Local {
     this.server.get("/api/get_all_constructors", (_, res) =>
       this.api_get_all_constructors(res),
     );
+    this.server.get(
+      "/api/get_nodes_abstract_info_by_constructor_name",
+      (req, res) => this.get_nodes_abstract_info_by_constructor_name(req, res),
+    );
 
     this.server.listen(port);
   }
 
   private api_get_all_constructors(res: Response) {
     const meta = this.analyzer.getAllConstructors();
+    res.json(meta);
+  }
+
+  private get_nodes_abstract_info_by_constructor_name(
+    req: Request,
+    res: Response,
+  ) {
+    const constructor_name = (req.query.constructor_name as string) ?? "";
+    const meta =
+      this.analyzer.getNodesAbstractInfoByConstructorName(constructor_name);
     res.json(meta);
   }
 }
