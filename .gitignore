@@ -195,8 +195,10 @@ Cargo.lock
 !.yarn/versions
 
 *.node
-*.js
-*.d.ts
+binding.js
+binding.d.ts
 
 .idea
 .parcel-cache
+
+cli-output

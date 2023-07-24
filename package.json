@@ -45,7 +45,7 @@
   "scripts": {
     "artifacts": "napi artifacts",
     "build": "napi build --platform --release --js binding.js --dts binding.d.ts",
-    "build:cli": "rollup -c rollup.config.js",
+    "build:cli": "npm run build && rollup -c rollup.config.js",
     "clean": "rimraf -g binding.js binding.d.ts v8*.node cli-output target",
     "build:debug": "napi build --platform --js binding.js --dts binding.d.ts",
     "prepublishOnly": "npm run build:ts && napi prepublish -t npm",
