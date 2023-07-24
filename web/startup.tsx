@@ -8,7 +8,7 @@ configure({
   enforceActions: "always",
 });
 
-import { Workbench } from "./workbench";
+import { Workbench } from "./workbench/workbench";
 
 const App = () => <Workbench />;
 

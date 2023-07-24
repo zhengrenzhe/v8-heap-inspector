@@ -1,101 +1,55 @@
-import React, { useState, useRef, useCallback } from "react";
-import axios from "axios";
+import React from "react";
+import { observer } from "mobx-react";
 import { TableVirtuoso } from "react-virtuoso";
-import { BsSortDown, BsFilterCircle } from "react-icons/bs";
-import { AiOutlineCopy, AiOutlineCheck } from "react-icons/ai";
+import { BsSortDown, BsSortUp, BsFilterCircle } from "react-icons/bs";
 import { VscInspect } from "react-icons/vsc";
 import { Body, InlineCode } from "@leafygreen-ui/typography";
 import IconButton from "@leafygreen-ui/icon-button";
 import TextInput from "@leafygreen-ui/text-input";
 import { palette } from "@leafygreen-ui/palette";
 import Highlighter from "react-highlight-words";
-import { useRequest } from "ahooks";
-import { CopyToClipboard } from "react-copy-to-clipboard";
 
-import {
-  API_get_all_constructors,
-  API_get_nodes_abstract_info_by_constructor_name,
-} from "../api";
-import { GetAllConstructorsReturnValue } from "../../binding";
+import { Copy, useService } from "@/web/utils";
+import { ConstructorService, useAPI } from "@/web/service";
 
-function Copy(props: { value: string; cls: string }) {
-  const [copied, setCopied] = useState(false);
-  const timer = useRef<number>();
-
-  return (
-    <CopyToClipboard
-      text={props.value}
-      onCopy={() => {
-        window.clearTimeout(timer.current);
-        setCopied(true);
-        timer.current = window.setTimeout(() => {
-          setCopied(false);
-        }, 3000);
-      }}
-    >
-      <span className={props.cls}>
-        {copied ? <AiOutlineCheck /> : <AiOutlineCopy />}
-      </span>
-    </CopyToClipboard>
-  );
-}
-
-export function ConstructorsItems() {
-  const { data } = useRequest<GetAllConstructorsReturnValue, any>(
-    async () => (await axios.get(API_get_all_constructors)).data,
-    {
-      cacheKey: "GetAllConstructorsReturnValue",
-      staleTime: Number.MAX_SAFE_INTEGER,
-    },
-  );
-
-  const inspect_cls = useCallback((name: string) => {
-    axios.get(API_get_nodes_abstract_info_by_constructor_name(name));
-  }, []);
-
-  const [showFilter, setShowFilter] = useState(false);
-  const [filterName, setFilterName] = useState("");
-  const [sortBySize, setSortBySize] = useState(false);
-
-  let constructors = (data?.constructors || [])
-    .filter((c) => c.name.toLowerCase().includes(filterName.toLowerCase()))
-    .sort((a, b) => a.name.localeCompare(b.name));
-
-  if (sortBySize) {
-    constructors = constructors.sort((a, b) => b.selfSize - a.selfSize);
-  }
-
-  const constructorsLength = constructors.length;
+const FilterBar = observer(() => {
+  const csSrv = useService(ConstructorService);
+  const {
+    showFilters,
+    sortSizeMode,
+    toggleSortSizeMode,
+    toggleFilters,
+    setFilter,
+  } = csSrv.viewModel;
 
   return (
-    <div
-      style={{
-        width: "100%",
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
+    <>
       <div>
         <IconButton
           aria-label="filter"
           title="filter by name"
-          active={showFilter}
-          onClick={() => setShowFilter(!showFilter)}
+          active={showFilters}
+          onClick={() => toggleFilters()}
         >
           <BsFilterCircle />
         </IconButton>
         <IconButton
           aria-label="filter"
           title="sory by self size"
-          active={sortBySize}
-          onClick={() => setSortBySize(!sortBySize)}
+          active={!!sortSizeMode}
+          onClick={() => toggleSortSizeMode()}
           style={{ margin: 4 }}
         >
-          <BsSortDown />
+          {sortSizeMode === "asc" ? (
+            <BsSortUp />
+          ) : sortSizeMode === "desc" ? (
+            <BsSortDown />
+          ) : (
+            <BsSortDown />
+          )}
         </IconButton>
       </div>
-      {showFilter && (
+      {showFilters && (
         <TextInput
           aria-labelledby="filter"
           sizeVariant="xsmall"
@@ -103,15 +57,30 @@ export function ConstructorsItems() {
           style={{ margin: "6px 0" }}
           placeholder="filter by constructor name"
           autoFocus
-          onChange={(e) => setFilterName(e.target.value.trim())}
+          onChange={(e) => setFilter("constructorName", e.target.value.trim())}
           onKeyDown={(e) => {
             if (e.key === "Escape") {
-              setFilterName("");
-              setShowFilter(false);
+              setFilter("constructorName", "");
+              toggleFilters(false);
             }
           }}
         />
       )}
+    </>
+  );
+});
+
+export const ConstructorList = observer(() => {
+  const { data } = useAPI({
+    apiName: "getAllConstructors",
+  });
+
+  const csSrv = useService(ConstructorService);
+  const constructors = csSrv.applyFilter(data?.constructors || []);
+
+  return (
+    <div className="constructors-list">
+      <FilterBar />
       <TableVirtuoso
         style={{
           height: "100%",
@@ -133,7 +102,7 @@ export function ConstructorsItems() {
             />
           ),
         }}
-        totalCount={constructorsLength}
+        totalCount={constructors.length}
         fixedItemHeight={24}
         fixedHeaderContent={() => (
           <tr className="list-table-head">
@@ -158,14 +127,14 @@ export function ConstructorsItems() {
               <td className="list-table-td-name" title={item.name}>
                 <InlineCode>
                   <Highlighter
-                    searchWords={[filterName]}
+                    searchWords={[csSrv.viewModel.filter.constructorName]}
                     autoEscape={true}
                     textToHighlight={item.name}
                   />
                 </InlineCode>
                 <Copy value={item.name} cls="list-table-td-name-copy" />
                 <VscInspect
-                  onClick={() => inspect_cls(item.name)}
+                  onClick={() => {}}
                   className="list-table-td-name-inspect"
                 />
               </td>
@@ -184,4 +153,4 @@ export function ConstructorsItems() {
       />
     </div>
   );
-}
+});

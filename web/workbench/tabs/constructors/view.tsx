@@ -1,11 +1,11 @@
 import React from "react";
 import Card from "@leafygreen-ui/card";
-import { Allotment } from "allotment";
 import { H2 } from "@leafygreen-ui/typography";
+import { Allotment } from "allotment";
 import "allotment/dist/style.css";
 
 import "./style.less";
-import { ConstructorsItems } from "./ConstructorsItems";
+import { ConstructorList } from "./constructorList";
 
 export function ConstructorsView() {
   return (
@@ -18,7 +18,7 @@ export function ConstructorsView() {
         >
           <Card className="constructors-card">
             <H2 className="constructors-title">Constructors</H2>
-            <ConstructorsItems />
+            <ConstructorList />
           </Card>
         </Allotment.Pane>
         <Allotment.Pane

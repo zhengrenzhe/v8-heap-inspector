@@ -2,21 +2,21 @@ import * as React from "react";
 import { observer } from "mobx-react";
 import { Tab, Tabs } from "@leafygreen-ui/tabs";
 
-import "./workbench.less";
-import { useService } from "./di";
-import { WorkbenchService } from "./workbenchModel";
-import { Constructors } from "./constructors";
-import { Statistics } from "./statistics";
+import { useContributions, useService } from "@/web/utils";
+import { WorkbenchService } from "@/web/service";
+import { WorkbenchTabContribution } from "@/web/contribution";
 
-const tabList = [Constructors, Statistics];
+import "./tabs";
+import "./workbench.less";
 
 export const Workbench = observer(() => {
-  const srv = useService(WorkbenchService);
+  const wbService = useService(WorkbenchService);
+  const tabList = useContributions(WorkbenchTabContribution);
 
   return (
     <Tabs
-      selected={srv.model.tabIndex}
-      setSelected={srv.model.setTabIndex}
+      selected={wbService.model.tabIndex}
+      setSelected={wbService.model.setTabIndex}
       aria-label="tab"
       className="workbench-main"
     >

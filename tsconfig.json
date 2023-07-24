@@ -12,7 +12,8 @@
     "baseUrl": "./",
     "paths": {
       "@/web/*": ["./web/*"],
-      "@/cli/*": ["./cli/*"]
+      "@/cli/*": ["./cli/*"],
+      "@/binding": ["./binding.d.ts"]
     },
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
@@ -34,8 +35,6 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
-    "allowUnusedLabels": true,
-    "allowUnreachableCode": true,
     "skipDefaultLibCheck": true,
     "skipLibCheck": true
   },
