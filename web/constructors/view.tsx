@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import Card from "@leafygreen-ui/card";
 import { Allotment } from "allotment";
-import { H1, H2 } from "@leafygreen-ui/typography";
+import { H2 } from "@leafygreen-ui/typography";
 import "allotment/dist/style.css";
 
 import "./style.less";

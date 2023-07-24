@@ -4,7 +4,7 @@ import arg from "arg";
 import path from "path";
 import chalk from "chalk";
 
-import { Local } from "./local";
+import { Local } from "@/cli/local";
 
 const args = arg({
   // Types

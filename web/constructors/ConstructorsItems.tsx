@@ -150,6 +150,9 @@ export function ConstructorsItems() {
         )}
         itemContent={(index) => {
           const item = constructors[index];
+          if (!item) {
+            return null;
+          }
           return (
             <>
               <td className="list-table-td-name" title={item.name}>
