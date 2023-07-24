@@ -9,6 +9,7 @@ export default {
     dir: "cli-output",
     format: "cjs",
     entryFileNames: "[name].cjs",
+    banner: "#!/usr/bin/env node",
   },
   external(id) {
     if (/\.node$/.test(id)) return true;
