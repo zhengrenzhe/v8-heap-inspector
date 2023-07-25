@@ -1,7 +1,10 @@
 import { makeAutoObservable } from "mobx";
 
 import { inject, injectable } from "@/web/utils";
-import { GetAllConstructorsReturnValue } from "@/binding";
+import {
+  GetAllConstructorsReturnValue,
+  NodeAbstractInfoReturnValue,
+} from "@/binding";
 
 import { APIService } from "./APIService";
 
@@ -10,19 +13,25 @@ class ViewModel {
     makeAutoObservable(this);
   }
 
+  public constructors: GetAllConstructorsReturnValue["constructors"] = [];
+
+  public instances: NodeAbstractInfoReturnValue[] = [];
+
+  public instancesReady = false;
+
   public inited = false;
 
   public showFilters = false;
+
+  public sortSizeMode: "asc" | "desc" | undefined = undefined;
 
   public filter = {
     constructorName: "",
   };
 
-  public sortSizeMode: "asc" | "desc" | undefined = undefined;
-
-  public setInited() {
-    this.inited = true;
-  }
+  public setData = <K extends keyof this>(k: K, v: this[K]) => {
+    this[k] = v;
+  };
 
   public toggleSortSizeMode = () => {
     if (this.sortSizeMode === undefined) {
@@ -35,10 +44,6 @@ class ViewModel {
       return (this.sortSizeMode = undefined);
     }
     return;
-  };
-
-  public toggleFilters = (v = !this.showFilters) => {
-    this.showFilters = v;
   };
 
   public setFilter = <K extends keyof ViewModel["filter"]>(
@@ -56,10 +61,8 @@ export class ConstructorService {
   @inject(APIService)
   private apiService: APIService;
 
-  private constructors: GetAllConstructorsReturnValue["constructors"] = [];
-
   public get filtedConstructors() {
-    return this.constructors
+    return this.viewModel.constructors
       .filter((c) =>
         c.name
           .toLowerCase()
@@ -80,8 +83,17 @@ export class ConstructorService {
 
   constructor() {
     this.apiService.getAllConstructors().then((d) => {
-      this.constructors = d.constructors;
-      this.viewModel.setInited();
+      this.viewModel.setData("constructors", d.constructors);
+      this.viewModel.setData("inited", true);
     });
   }
+
+  public getInstances = async (constructorName: string) => {
+    const data = await this.apiService.getNodesAbstractInfoByConstructorName(
+      constructorName,
+    );
+
+    this.viewModel.setData("instances", data);
+    this.viewModel.setData("instancesReady", true);
+  };
 }

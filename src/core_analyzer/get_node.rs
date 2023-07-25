@@ -3,21 +3,19 @@ use crate::core::{SnapshotDeserialized, SnapshotNode};
 #[napi(object)]
 pub struct NodeAbstractInfoReturnValue {
   pub node_idx: i64,
-  pub node_type_index: i64,
+  pub node_type: String,
   pub name: String,
   pub id: i64,
   pub self_size: i64,
-  pub edge_count: i64,
 }
 
 pub fn wrap_node_abstract_info(node: &SnapshotNode) -> NodeAbstractInfoReturnValue {
   NodeAbstractInfoReturnValue {
     node_idx: node.node_idx as i64,
-    node_type_index: node.node_type_index as i64,
+    node_type: node.get_node_type().to_string(),
     name: node.name.clone(),
     id: node.id as i64,
     self_size: node.self_size as i64,
-    edge_count: node.edge_count as i64,
   }
 }
 

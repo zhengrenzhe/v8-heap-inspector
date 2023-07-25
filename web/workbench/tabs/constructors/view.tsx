@@ -4,8 +4,9 @@ import { H2 } from "@leafygreen-ui/typography";
 import { Allotment } from "allotment";
 import "allotment/dist/style.css";
 
-import "./style.less";
 import { ConstructorList } from "./constructorList";
+import { InstanceList } from "./instanceList";
+import "./style.less";
 
 export function ConstructorsView() {
   return (
@@ -28,7 +29,7 @@ export function ConstructorsView() {
         >
           <Card className="constructors-card">
             <H2 className="constructors-title">Instances</H2>
-            Pane 1
+            <InstanceList />
           </Card>
         </Allotment.Pane>
         <Allotment.Pane className="constructors-col">
