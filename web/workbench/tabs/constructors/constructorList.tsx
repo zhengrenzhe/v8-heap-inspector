@@ -10,7 +10,8 @@ import { palette } from "@leafygreen-ui/palette";
 import Highlighter from "react-highlight-words";
 
 import { Copy, useService } from "@/web/utils";
-import { ConstructorService, useAPI } from "@/web/service";
+import { ConstructorService } from "@/web/service";
+import { Spinner } from "@leafygreen-ui/loading-indicator";
 
 const FilterBar = observer(() => {
   const csSrv = useService(ConstructorService);
@@ -71,86 +72,101 @@ const FilterBar = observer(() => {
 });
 
 export const ConstructorList = observer(() => {
-  const { data } = useAPI({
-    apiName: "getAllConstructors",
-  });
-
   const csSrv = useService(ConstructorService);
-  const constructors = csSrv.applyFilter(data?.constructors || []);
+  const constructors = csSrv.filtedConstructors;
+  const inited = csSrv.viewModel.inited;
 
   return (
     <div className="constructors-list">
       <FilterBar />
-      <TableVirtuoso
-        style={{
-          height: "100%",
-          width: "100%",
-        }}
-        components={{
-          Table: ({ style, ...props }) => (
-            <table {...props} style={style} className="list-table" />
-          ),
-          TableRow: ({ style, ...props }) => (
-            <tr
-              {...props}
-              style={{
-                ...style,
-                backgroundColor:
-                  props["data-index"] % 2 ? palette.gray.light3 : undefined,
-              }}
-              className="list-table-row"
-            />
-          ),
-        }}
-        totalCount={constructors.length}
-        fixedItemHeight={24}
-        fixedHeaderContent={() => (
-          <tr className="list-table-head">
-            <th>
-              <Body weight="medium">Names</Body>
-            </th>
-            <th style={{ width: 60 }}>
-              <Body weight="medium">Count</Body>
-            </th>
-            <th style={{ width: 80 }}>
-              <Body weight="medium">Self Size</Body>
-            </th>
-          </tr>
-        )}
-        itemContent={(index) => {
-          const item = constructors[index];
-          if (!item) {
-            return null;
-          }
-          return (
-            <>
-              <td className="list-table-td-name" title={item.name}>
-                <InlineCode>
-                  <Highlighter
-                    searchWords={[csSrv.viewModel.filter.constructorName]}
-                    autoEscape={true}
-                    textToHighlight={item.name}
+      {!inited ? (
+        <Spinner
+          description="Loading constructors..."
+          displayOption="xlarge-vertical"
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            flex: 1,
+            alignItems: "center",
+          }}
+        />
+      ) : null}
+      {inited ? (
+        <TableVirtuoso
+          style={{
+            height: "100%",
+            width: "100%",
+          }}
+          components={{
+            Table: ({ style, ...props }) => (
+              <table {...props} style={style} className="list-table" />
+            ),
+            TableRow: ({ style, ...props }) => (
+              <tr
+                {...props}
+                style={{
+                  ...style,
+                  backgroundColor:
+                    props["data-index"] % 2 ? palette.gray.light3 : undefined,
+                }}
+                className="list-table-row"
+              />
+            ),
+          }}
+          totalCount={constructors.length}
+          fixedItemHeight={24}
+          fixedHeaderContent={() => (
+            <tr className="list-table-head">
+              <th>
+                <Body weight="medium">Names</Body>
+              </th>
+              <th style={{ width: 60 }}>
+                <Body weight="medium">Count</Body>
+              </th>
+              <th style={{ width: 80 }}>
+                <Body weight="medium">Self Size</Body>
+              </th>
+            </tr>
+          )}
+          itemContent={(index) => {
+            const item = constructors[index];
+            if (!item) {
+              return null;
+            }
+            return (
+              <>
+                <td className="list-table-td-name" title={item.name}>
+                  <InlineCode>
+                    <Highlighter
+                      searchWords={[csSrv.viewModel.filter.constructorName]}
+                      autoEscape={true}
+                      textToHighlight={item.name}
+                    />
+                  </InlineCode>
+                  <Copy value={item.name} cls="list-table-td-name-copy" />
+                  <VscInspect
+                    onClick={() => {}}
+                    className="list-table-td-name-inspect"
                   />
-                </InlineCode>
-                <Copy value={item.name} cls="list-table-td-name-copy" />
-                <VscInspect
-                  onClick={() => {}}
-                  className="list-table-td-name-inspect"
-                />
-              </td>
-              <td className="list-table-td-other" title={item.count.toString()}>
-                <Body>{item.count}</Body>
-              </td>
-              <td
-                className="list-table-td-other"
-                title={item.selfSize.toString()}
-              >
-                <Body>{item.selfSize}</Body>
-              </td>
-            </>
-          );
-        }}
-      />
+                </td>
+                <td
+                  className="list-table-td-other"
+                  title={item.count.toString()}
+                >
+                  <Body>{item.count}</Body>
+                </td>
+                <td
+                  className="list-table-td-other"
+                  title={item.selfSize.toString()}
+                >
+                  <Body>{item.selfSize}</Body>
+                </td>
+              </>
+            );
+          }}
+        />
+      ) : null}
     </div>
   );
 });

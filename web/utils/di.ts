@@ -3,13 +3,12 @@ import { Constructable, Container, Service } from "typedi";
 
 export const injectable = Service;
 
-export function inject() {
+export function inject(t: any) {
   return (target: any, name: any): any => {
-    const type = Reflect.getMetadata("design:type", target, name);
-    const cls = Container.get(type);
+    const cls = Container.get(t);
 
     if (!cls) {
-      throw new Error(`${type} not found`);
+      throw new Error(`${t} not found`);
     }
 
     const descriptor: PropertyDescriptor = {

@@ -1,12 +1,16 @@
 import { makeAutoObservable } from "mobx";
 
-import { injectable } from "@/web/utils";
+import { inject, injectable } from "@/web/utils";
 import { GetAllConstructorsReturnValue } from "@/binding";
+
+import { APIService } from "./APIService";
 
 class ViewModel {
   constructor() {
     makeAutoObservable(this);
   }
+
+  public inited = false;
 
   public showFilters = false;
 
@@ -15,6 +19,10 @@ class ViewModel {
   };
 
   public sortSizeMode: "asc" | "desc" | undefined = undefined;
+
+  public setInited() {
+    this.inited = true;
+  }
 
   public toggleSortSizeMode = () => {
     if (this.sortSizeMode === undefined) {
@@ -33,20 +41,25 @@ class ViewModel {
     this.showFilters = v;
   };
 
-  public setFilter<K extends keyof ViewModel["filter"]>(
+  public setFilter = <K extends keyof ViewModel["filter"]>(
     k: K,
     v: ViewModel["filter"][K],
-  ) {
+  ) => {
     this.filter[k] = v;
-  }
+  };
 }
 
 @injectable()
 export class ConstructorService {
   public viewModel = new ViewModel();
 
-  public applyFilter(data: GetAllConstructorsReturnValue["constructors"]) {
-    return data
+  @inject(APIService)
+  private apiService: APIService;
+
+  private constructors: GetAllConstructorsReturnValue["constructors"] = [];
+
+  public get filtedConstructors() {
+    return this.constructors
       .filter((c) =>
         c.name
           .toLowerCase()
@@ -63,5 +76,12 @@ export class ConstructorService {
 
         return a.name.localeCompare(b.name);
       });
+  }
+
+  constructor() {
+    this.apiService.getAllConstructors().then((d) => {
+      this.constructors = d.constructors;
+      this.viewModel.setInited();
+    });
   }
 }
