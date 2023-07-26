@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@leafygreen-ui/badge':
+    specifier: ^8.0.8
+    version: 8.0.8(@leafygreen-ui/leafygreen-provider@3.1.3)(react@18.2.0)
   '@leafygreen-ui/card':
     specifier: ^10.0.0
     version: 10.0.0(@leafygreen-ui/leafygreen-provider@3.1.3)(react@18.2.0)
@@ -326,6 +329,20 @@ packages:
       '@leafygreen-ui/emotion': 4.0.4
       '@leafygreen-ui/hooks': 7.7.5
       '@leafygreen-ui/lib': 10.4.0(react@18.2.0)
+    transitivePeerDependencies:
+      - react
+    dev: false
+
+  /@leafygreen-ui/badge@8.0.8(@leafygreen-ui/leafygreen-provider@3.1.3)(react@18.2.0):
+    resolution: {integrity: sha512-npD8XAbIKZV2XUIXSE6u69sv9Ff50i37n+EDjvzhCxQPHQtAG3kAVuXy1jrq7Fuk1dVYvaFAuwUfP4hMQfv4Kw==}
+    peerDependencies:
+      '@leafygreen-ui/leafygreen-provider': ^3.1.3
+    dependencies:
+      '@leafygreen-ui/emotion': 4.0.4
+      '@leafygreen-ui/leafygreen-provider': 3.1.3(react@18.2.0)
+      '@leafygreen-ui/lib': 10.4.0(react@18.2.0)
+      '@leafygreen-ui/palette': 4.0.4
+      '@leafygreen-ui/tokens': 2.1.1
     transitivePeerDependencies:
       - react
     dev: false

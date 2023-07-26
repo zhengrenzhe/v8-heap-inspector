@@ -11,7 +11,6 @@ import Highlighter from "react-highlight-words";
 import { Copy, useService } from "@/web/utils";
 import { ConstructorService } from "@/web/service";
 import { TableList } from "@/web/utils/";
-import "./constructorList.less";
 
 const FilterBar = observer(() => {
   const csSrv = useService(ConstructorService);
@@ -19,7 +18,7 @@ const FilterBar = observer(() => {
     csSrv.viewModel;
 
   return (
-    <div className="filter-actions">
+    <div className="filter-actions" style={{ padding: "0 8px" }}>
       <IconButton
         aria-label="filter"
         title="filter by name"

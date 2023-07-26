@@ -5,6 +5,7 @@ import { Body } from "@leafygreen-ui/typography";
 import { useService } from "@/web/utils";
 import { ConstructorService } from "@/web/service";
 import { TableList } from "../../../../utils/tableView";
+import Badge from "@leafygreen-ui/badge";
 
 export const InstanceList = observer(() => {
   const csSrv = useService(ConstructorService);
@@ -18,14 +19,20 @@ export const InstanceList = observer(() => {
   }
 
   return (
-    <div className="instance-list">
+    <div className="split-root">
       <TableList
         data={csSrv.viewModel.instances}
         column={[
-          { columnTitle: "Name", row: (item) => item.name },
-          { columnTitle: "ID", row: (item) => item.id },
-          { columnTitle: "Type", row: (item) => item.nodeType },
-          { columnTitle: "Self Size", row: (item) => item.selfSize },
+          { columnTitle: "Name", row: (item) => <Body>{item.name}</Body> },
+          { columnTitle: "ID", row: (item) => <Body>{item.id}</Body> },
+          {
+            columnTitle: "Type",
+            row: (item) => <Badge variant="green">{item.nodeType}</Badge>,
+          },
+          {
+            columnTitle: "Self Size",
+            row: (item) => <Body>{item.selfSize}</Body>,
+          },
         ]}
       />
     </div>

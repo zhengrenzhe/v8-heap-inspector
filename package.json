@@ -58,6 +58,7 @@
   },
   "packageManager": "yarn@3.6.1",
   "dependencies": {
+    "@leafygreen-ui/badge": "^8.0.8",
     "@leafygreen-ui/card": "^10.0.0",
     "@leafygreen-ui/icon-button": "^15.0.13",
     "@leafygreen-ui/loading-indicator": "^2.0.0",
