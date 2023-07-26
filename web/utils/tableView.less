@@ -1,0 +1,54 @@
+.list-table {
+  width: 100%;
+  table-layout: fixed;
+  font-size: 13px;
+
+  .list-table-row {
+    height: 24px;
+
+    td:first-child {
+      padding-left: 8px;
+    }
+    td:last-child {
+      padding-right: 8px;
+    }
+  }
+
+  .list-table-head {
+    background-color: white;
+  }
+
+  .list-table-td-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+
+    .list-table-td-name-copy,
+    .list-table-td-name-inspect {
+      margin-left: 4px;
+      line-height: 1;
+      font-size: 0;
+      cursor: pointer;
+      display: none;
+      svg {
+        font-size: 13px;
+      }
+    }
+    .list-table-td-name-inspect {
+      font-size: 13px;
+    }
+
+    &:hover {
+      .list-table-td-name-copy,
+      .list-table-td-name-inspect {
+        display: initial;
+      }
+    }
+  }
+
+  .list-table-td-other {
+    text-align: center;
+  }
+}

@@ -10,7 +10,8 @@ import Highlighter from "react-highlight-words";
 
 import { Copy, useService } from "@/web/utils";
 import { ConstructorService } from "@/web/service";
-import { TableList } from "../../../../utils/tableView";
+import { TableList } from "@/web/utils/";
+import "./constructorList.less";
 
 const FilterBar = observer(() => {
   const csSrv = useService(ConstructorService);
@@ -18,32 +19,34 @@ const FilterBar = observer(() => {
     csSrv.viewModel;
 
   return (
-    <>
-      <div>
-        <IconButton
-          aria-label="filter"
-          title="filter by name"
-          active={showFilters}
-          onClick={() => setData("showFilters", !showFilters)}
-        >
-          <BsFilterCircle />
-        </IconButton>
-        <IconButton
-          aria-label="filter"
-          title="sory by self size"
-          active={!!sortSizeMode}
-          onClick={() => toggleSortSizeMode()}
-          style={{ margin: 4 }}
-        >
-          {sortSizeMode === "asc" ? (
-            <BsSortUp />
-          ) : sortSizeMode === "desc" ? (
-            <BsSortDown />
-          ) : (
-            <BsSortDown />
-          )}
-        </IconButton>
-      </div>
+    <div className="filter-actions">
+      <IconButton
+        aria-label="filter"
+        title="filter by name"
+        active={showFilters}
+        onClick={() => {
+          setData("showFilters", !showFilters);
+          setFilter("constructorName", "");
+        }}
+      >
+        <BsFilterCircle />
+      </IconButton>
+      <IconButton
+        aria-label="filter"
+        title="sory by self size"
+        active={!!sortSizeMode}
+        onClick={() => toggleSortSizeMode()}
+        style={{ margin: 4 }}
+      >
+        {sortSizeMode === "asc" ? (
+          <BsSortUp />
+        ) : sortSizeMode === "desc" ? (
+          <BsSortDown />
+        ) : (
+          <BsSortDown />
+        )}
+      </IconButton>
+
       {showFilters && (
         <TextInput
           aria-labelledby="filter"
@@ -61,7 +64,7 @@ const FilterBar = observer(() => {
           }}
         />
       )}
-    </>
+    </div>
   );
 });
 
@@ -71,7 +74,7 @@ export const ConstructorList = observer(() => {
   const inited = csSrv.viewModel.inited;
 
   return (
-    <div className="constructors-list">
+    <div className="split-root">
       <FilterBar />
       {!inited ? (
         <Spinner

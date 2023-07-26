@@ -8,6 +8,7 @@ import { WorkbenchTabContribution } from "@/web/contribution";
 
 import "./tabs";
 import "./workbench.less";
+import { H2 } from "@leafygreen-ui/typography";
 
 export const Workbench = observer(() => {
   const wbService = useService(WorkbenchService);
@@ -22,7 +23,7 @@ export const Workbench = observer(() => {
     >
       {tabList.map((t) => (
         <Tab
-          name={t.name}
+          name={<H2 className="workbench-tab-pane-title">{t.name}</H2>}
           key={t.name}
           data-tab={t.name}
           className="workbench-tab-pane"

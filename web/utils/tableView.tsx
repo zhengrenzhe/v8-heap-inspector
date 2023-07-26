@@ -3,6 +3,8 @@ import { TableVirtuoso } from "react-virtuoso";
 import { palette } from "@leafygreen-ui/palette";
 import { Body } from "@leafygreen-ui/typography";
 
+import "./tableView.less";
+
 interface ITableListProps<D> {
   data: D[];
   column: {

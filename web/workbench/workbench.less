@@ -168,7 +168,11 @@ body,
 
 .workbench-main > div:last-child {
   flex: 1;
-  overflow: clip;
+  overflow: hidden;
+}
+
+button.workbench-tab-pane {
+  padding: 10px 14px;
 }
 
 div.workbench-tab-pane {
@@ -180,17 +184,15 @@ div.workbench-tab-pane {
   }
 }
 
+.workbench-tab-pane-title {
+  font-size: 16px;
+  line-height: 1;
+  font-weight: bold;
+}
+
 .workbench-tab-pane-wrap {
   display: flex;
   height: 100%;
   width: 100%;
-  overflow: clip;
-}
-
-.tab-logo {
-  div,
-  img {
-    width: 24px;
-    height: 24px;
-  }
+  overflow: hidden;
 }
