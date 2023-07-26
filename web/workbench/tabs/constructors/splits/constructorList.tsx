@@ -10,7 +10,7 @@ import Highlighter from "react-highlight-words";
 
 import { Copy, useService } from "@/web/utils";
 import { ConstructorService } from "@/web/service";
-import { TableList } from "./tableView";
+import { TableList } from "../../../../utils/tableView";
 
 const FilterBar = observer(() => {
   const csSrv = useService(ConstructorService);

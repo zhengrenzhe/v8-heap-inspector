@@ -20,11 +20,6 @@ export const Workbench = observer(() => {
       aria-label="tab"
       className="workbench-main"
     >
-      <Tab
-        className="tab-logo"
-        disabled
-        name={<img src="https://v8.dev/_img/v8-outline.svg" />}
-      />
       {tabList.map((t) => (
         <Tab
           name={t.name}

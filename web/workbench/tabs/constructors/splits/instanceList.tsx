@@ -4,7 +4,7 @@ import { Body } from "@leafygreen-ui/typography";
 
 import { useService } from "@/web/utils";
 import { ConstructorService } from "@/web/service";
-import { TableList } from "./tableView";
+import { TableList } from "../../../../utils/tableView";
 
 export const InstanceList = observer(() => {
   const csSrv = useService(ConstructorService);

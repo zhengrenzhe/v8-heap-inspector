@@ -12,7 +12,7 @@ class WorkbenchModel {
     makeAutoObservable(this);
   }
 
-  public tabIndex = 1;
+  public tabIndex = 0;
 
   public setTabIndex = (index: number) => {
     this.tabIndex = index;
