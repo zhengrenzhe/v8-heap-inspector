@@ -4,6 +4,7 @@ use super::{
 use petgraph::graph::NodeIndex;
 use petgraph::{Directed, Graph};
 
+#[derive(Debug)]
 pub struct SnapshotNode {
   /// node index in the snapshot.nodes fields
   pub node_idx: u64,
@@ -51,6 +52,7 @@ impl SnapshotNode {
   }
 }
 
+#[derive(Debug)]
 pub struct SnapshotEdge {
   /// edge index in the snapshot.edges fields
   pub edge_index: u64,

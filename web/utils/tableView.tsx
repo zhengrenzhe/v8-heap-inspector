@@ -13,6 +13,7 @@ interface ITableListProps<D> {
     rowTitle?: (item: D) => string;
     width?: number;
   }[];
+  onRowClick?: (item: D) => void;
 }
 
 export function TableList<D>(props: ITableListProps<D>) {
@@ -63,6 +64,7 @@ export function TableList<D>(props: ITableListProps<D>) {
                   index === 0 ? "list-table-td-name" : "list-table-td-other"
                 }
                 key={col.columnTitle}
+                onClick={() => props.onRowClick?.(item)}
               >
                 {col.row(item)}
               </td>

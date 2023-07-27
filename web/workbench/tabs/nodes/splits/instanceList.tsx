@@ -4,7 +4,7 @@ import { Body } from "@leafygreen-ui/typography";
 
 import { useService } from "@/web/utils";
 import { ConstructorService } from "@/web/service";
-import { TableList } from "../../../../utils/tableView";
+import { TableList } from "@/web/utils";
 import Badge from "@leafygreen-ui/badge";
 
 export const InstanceList = observer(() => {
@@ -34,6 +34,9 @@ export const InstanceList = observer(() => {
             row: (item) => <Body>{item.selfSize}</Body>,
           },
         ]}
+        onRowClick={(item) => {
+          csSrv.getNodeReference(item.nodeIdx);
+        }}
       />
     </div>
   );

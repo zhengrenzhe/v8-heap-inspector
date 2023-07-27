@@ -31,4 +31,13 @@ export class APIService {
       },
     );
   };
+
+  public getNodeReferences = async (nodeIdx: number) => {
+    return this.sendReq<NodeAbstractInfoReturnValue[]>(
+      "http://localhost:3000/api/get_node_references",
+      {
+        nodeIdx,
+      },
+    );
+  };
 }

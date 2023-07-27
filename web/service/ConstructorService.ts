@@ -96,4 +96,9 @@ export class ConstructorService {
     this.viewModel.setData("instances", data);
     this.viewModel.setData("instancesReady", true);
   };
+
+  public getNodeReference = async (nodeIdx: number) => {
+    const r = await this.apiService.getNodeReferences(nodeIdx);
+    console.log(r);
+  };
 }

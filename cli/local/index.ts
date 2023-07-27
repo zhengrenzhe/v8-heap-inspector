@@ -40,6 +40,9 @@ export class Local {
       "/api/get_nodes_abstract_info_by_constructor_name",
       (req, res) => this.get_nodes_abstract_info_by_constructor_name(req, res),
     );
+    this.server.get("/api/get_node_references", (req, res) =>
+      this.get_node_references(req, res),
+    );
 
     this.server.listen(port);
   }
@@ -57,5 +60,11 @@ export class Local {
     const meta =
       this.analyzer.getNodesAbstractInfoByConstructorName(constructor_name);
     res.json(meta);
+  }
+
+  private get_node_references(req: Request, res: Response) {
+    const nodeIdx = (req.query.nodeIdx as string) ?? "";
+    const references = this.analyzer.getNodeReferences(parseInt(nodeIdx));
+    res.json(references);
   }
 }
