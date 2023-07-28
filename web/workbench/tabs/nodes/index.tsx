@@ -4,11 +4,12 @@ import { Allotment } from "allotment";
 import "allotment/dist/style.css";
 import { contributionImplement } from "@/web/utils";
 import { WorkbenchTabContribution } from "@/web/contribution";
+import { palette } from "@leafygreen-ui/palette";
 
 import { ConstructorList } from "./splits/constructorList";
 import { InstanceList } from "./splits/instanceList";
+import { ReferenceGraph } from "./splits/referenceGraph";
 import "./style.less";
-import { palette } from "@leafygreen-ui/palette";
 
 const pane = [
   {
@@ -25,7 +26,7 @@ const pane = [
   },
   {
     title: "Reference Graph",
-    render: () => null,
+    render: ReferenceGraph,
     minSize: 0,
   },
 ];

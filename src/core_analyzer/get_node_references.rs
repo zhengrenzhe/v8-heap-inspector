@@ -71,9 +71,10 @@ fn find_reference(
   s: &SnapshotDeserialized,
   with_up: bool,
   with_down: bool,
-  depth: u32,
+  depth: i64,
+  max_depth: i64,
 ) -> Vec<NodeFullInfoReturnValue> {
-  if depth > 2 {
+  if depth > max_depth {
     return vec![];
   }
 
@@ -97,14 +98,14 @@ fn find_reference(
   if with_up {
     for from_node in get_nodes(&from_edges, s, true) {
       let mut r: Vec<NodeFullInfoReturnValue> =
-        find_reference(from_node, s, true, false, depth + 1);
+        find_reference(from_node, s, true, false, depth + 1, max_depth);
       result.append(&mut r);
     }
   }
 
   if with_down {
     for to_node in get_nodes(&to_edges, s, false) {
-      let mut r = find_reference(to_node, s, false, true, depth + 1);
+      let mut r = find_reference(to_node, s, false, true, depth + 1, max_depth);
       result.append(&mut r);
     }
   }
@@ -115,6 +116,7 @@ fn find_reference(
 pub fn get_node_references(
   s: &SnapshotDeserialized,
   node_idx: i64,
+  max_depth: i64,
 ) -> Vec<NodeFullInfoReturnValue> {
   let node = s.nodes.get(node_idx as usize);
 
@@ -122,5 +124,5 @@ pub fn get_node_references(
     return vec![];
   }
 
-  return find_reference(node.unwrap(), s, true, true, 0);
+  return find_reference(node.unwrap(), s, false, true, 0, max_depth);
 }

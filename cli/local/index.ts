@@ -64,7 +64,11 @@ export class Local {
 
   private get_node_references(req: Request, res: Response) {
     const nodeIdx = (req.query.nodeIdx as string) ?? "";
-    const references = this.analyzer.getNodeReferences(parseInt(nodeIdx));
+    const maxDepth = (req.query.maxDepth as string) ?? 0;
+    const references = this.analyzer.getNodeReferences(
+      parseInt(nodeIdx),
+      parseInt(maxDepth),
+    );
     res.json(references);
   }
 }

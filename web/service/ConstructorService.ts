@@ -1,38 +1,54 @@
-import { makeAutoObservable } from "mobx";
+import { action, makeAutoObservable, makeObservable, observable } from "mobx";
 
 import { inject, injectable } from "@/web/utils";
 import {
   GetAllConstructorsReturnValue,
   NodeAbstractInfoReturnValue,
+  NodeFullInfoReturnValue,
 } from "@/binding";
 
 import { APIService } from "./APIService";
 
 class ViewModel {
   constructor() {
-    makeAutoObservable(this);
+    makeObservable(this);
   }
 
+  @observable.ref
   public constructors: GetAllConstructorsReturnValue["constructors"] = [];
 
+  @observable.ref
   public instances: NodeAbstractInfoReturnValue[] = [];
 
+  @observable
   public instancesReady = false;
 
+  @observable
   public inited = false;
 
+  @observable
   public showFilters = false;
 
+  @observable
   public sortSizeMode: "asc" | "desc" | undefined = undefined;
 
+  @observable
   public filter = {
     constructorName: "",
   };
 
+  @observable.ref
+  public nodeReferences: NodeFullInfoReturnValue[] = [];
+
+  @observable
+  public startNodeIdx = 0;
+
+  @action
   public setData = <K extends keyof this>(k: K, v: this[K]) => {
     this[k] = v;
   };
 
+  @action
   public toggleSortSizeMode = () => {
     if (this.sortSizeMode === undefined) {
       return (this.sortSizeMode = "desc");
@@ -46,6 +62,7 @@ class ViewModel {
     return;
   };
 
+  @action
   public setFilter = <K extends keyof ViewModel["filter"]>(
     k: K,
     v: ViewModel["filter"][K],
@@ -97,8 +114,14 @@ export class ConstructorService {
     this.viewModel.setData("instancesReady", true);
   };
 
-  public getNodeReference = async (nodeIdx: number) => {
-    const r = await this.apiService.getNodeReferences(nodeIdx);
-    console.log(r);
+  public getInitialNodeReference = async (nodeIdx: number) => {
+    const data = await this.apiService.getNodeReferences(nodeIdx, 0);
+    this.viewModel.setData("nodeReferences", data);
+    this.viewModel.setData("startNodeIdx", nodeIdx);
+  };
+
+  public getNodeReference = async (nodeIdx: number, maxDepth: number) => {
+    const data = await this.apiService.getNodeReferences(nodeIdx, maxDepth);
+    return data;
   };
 }
