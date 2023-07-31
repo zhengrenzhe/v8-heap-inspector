@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback } from "react";
 import { observer } from "mobx-react";
 import Tree from "rc-tree";
 import { DataNode, EventDataNode } from "rc-tree/lib/interface";
@@ -6,90 +6,40 @@ import "rc-tree/assets/index.css";
 
 import { ConstructorService } from "@/web/service";
 import { useService } from "@/web/utils";
-import { EdgeInfoReturnValue, NodeFullInfoReturnValue } from "@/binding";
+import { NodeFullInfoReturnValue } from "@/binding";
 
 function convertTreeData(
-  current: NodeFullInfoReturnValue,
-  fromEdge?: EdgeInfoReturnValue,
+  start: NodeFullInfoReturnValue,
+  pos: number[]
 ): DataNode {
-  return {
-    title: `${current.abstractInfo.name} ${fromEdge?.edgeType}`,
-    key: current.abstractInfo.nodeIdx,
+  const currentNode: DataNode = {
+    title: `${start.abstractInfo.name} @${start.abstractInfo.id}`,
+    nodeIdx: start.abstractInfo.nodeIdx,
+    key: `${pos.join("-")}`,
+    children: start.children
+      .map((toNode, idx) => convertTreeData(toNode, pos.concat(idx)))
   };
-}
 
-function walkDownFind(
-  node: DataNode,
-  tester: (n: DataNode) => boolean,
-): DataNode | undefined {
-  if (tester(node)) {
-    return node;
-  }
-
-  if (node.children) {
-    for (const child of node.children) {
-      const n = walkDownFind(child, tester);
-      if (n) {
-        return n;
-      }
-    }
-  }
-
-  return undefined;
+  return currentNode;
 }
 
 export const Struct = observer(() => {
   const csSrv = useService(ConstructorService);
-
   const nodeReferences = csSrv.viewModel.nodeReferences;
-  const startNode = nodeReferences.find(
-    (n) => n.abstractInfo.nodeIdx === csSrv.viewModel.startNodeIdx,
-  );
-
-  const [treeData, setTreeData] = useState<DataNode | null>(null);
-
-  useEffect(() => {
-    if (startNode) {
-      setTreeData(convertTreeData(startNode));
-    }
-  }, [startNode]);
 
   const loadData = useCallback((treeNode: EventDataNode<DataNode>) => {
-    return new Promise<void>(async (resolve) => {
-      if (treeNode.children) {
-        resolve();
-        return;
-      }
-
-      const d = await csSrv.getNodeReference(
-        parseInt(treeNode.key.toString()),
-        1,
-      );
-
-      setTreeData((prev) => {
-        if (!prev) {
-          return prev;
-        }
-
-        const target = walkDownFind(prev, (n) => n.key === treeNode.key);
-        if (target) {
-          const children = d
-            .filter((n) => n.abstractInfo.nodeIdx !== treeNode.key)
-            .map((n) => convertTreeData(n));
-
-          target.children = children;
-        }
-
-        return prev;
-      });
-
-      resolve();
+    return new Promise<void>(async (r) => {
+      console.log(treeNode);
+      await csSrv.loadNodeReference(parseInt(treeNode.nodeIdx.toString()));
+      r();
     });
   }, []);
 
-  if (!treeData) {
+  if (!nodeReferences) {
     return null;
   }
+
+  const treeData = convertTreeData(nodeReferences, [0]);
 
   return (
     <div className="split-root">

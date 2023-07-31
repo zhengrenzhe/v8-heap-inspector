@@ -34,7 +34,7 @@ export class APIService {
   };
 
   public getNodeReferences = async (nodeIdx: number, maxDepth: number) => {
-    return this.sendReq<NodeFullInfoReturnValue[]>(
+    return this.sendReq<NodeFullInfoReturnValue>(
       "http://localhost:3000/api/get_node_references",
       {
         nodeIdx,
