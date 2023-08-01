@@ -50,6 +50,19 @@ impl SnapshotNode {
 
     vec!["(", node_type, ")"].join("")
   }
+
+  pub fn get_to_edges<'a>(&self, s: &'a SnapshotDeserialized) -> Vec<&'a SnapshotEdge> {
+    let mut edges: Vec<&'a SnapshotEdge> = vec![];
+
+    for to_edge_idx in &self.to_edge_index {
+      match s.edges.get(*to_edge_idx as usize) {
+        Some(edge) => edges.push(edge),
+        None => {}
+      }
+    }
+
+    edges
+  }
 }
 
 #[derive(Debug)]

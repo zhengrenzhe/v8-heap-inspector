@@ -1,5 +1,6 @@
 use crate::core::{SnapshotDeserialized, SnapshotNode};
 
+#[derive(Debug)]
 #[napi(object)]
 pub struct NodeAbstractInfoReturnValue {
   pub node_idx: i64,

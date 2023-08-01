@@ -1,88 +1,76 @@
-use crate::core::{SnapshotDeserialized, SnapshotEdge, SnapshotNode};
+use crate::core::{SnapshotDeserialized, SnapshotNode};
 
 use super::NodeAbstractInfoReturnValue;
 
-#[napi(object)]
-pub struct EdgeInfoReturnValue {
-  pub edge_type: String,
-  pub to_node_id: i64,
-  pub to_node_idx: i64,
-  pub from_node_id: i64,
-  pub from_node_idx: i64,
-}
-
-impl EdgeInfoReturnValue {
-  pub fn new(n: &SnapshotEdge) -> EdgeInfoReturnValue {
-    EdgeInfoReturnValue {
-      edge_type: n.get_edge_type().to_string(),
-      to_node_id: n.to_node_id as i64,
-      to_node_idx: n.to_node_index as i64,
-      from_node_id: n.from_node_id as i64,
-      from_node_idx: n.from_node_index as i64,
-    }
-  }
-}
-
+#[derive(Debug)]
 #[napi(object)]
 pub struct NodeFullInfoReturnValue {
-  pub abstract_info: NodeAbstractInfoReturnValue,
+  pub info: NodeAbstractInfoReturnValue,
   pub children: Vec<NodeFullInfoReturnValue>,
 }
 
-impl std::ops::Deref for NodeFullInfoReturnValue {
-  type Target = NodeAbstractInfoReturnValue;
+impl NodeFullInfoReturnValue {
+  pub fn new(
+    n: &SnapshotNode,
+    s: &SnapshotDeserialized,
+    with_children: bool,
+  ) -> NodeFullInfoReturnValue {
+    let mut children: Vec<NodeFullInfoReturnValue> = vec![];
 
-  fn deref(&self) -> &Self::Target {
-    &self.abstract_info
+    if with_children {
+      for to_edge in n.get_to_edges(s) {
+        match s.nodes.get(to_edge.to_node_index as usize) {
+          Some(child) => {
+            children.push(NodeFullInfoReturnValue::new(child, s, false));
+          }
+          None => {}
+        }
+      }
+    }
+
+    return NodeFullInfoReturnValue {
+      info: NodeAbstractInfoReturnValue::new(n),
+      children,
+    };
   }
-}
-
-fn get_edges<'a>(idx: &'a Vec<u64>, s: &'a SnapshotDeserialized) -> Vec<&'a SnapshotEdge> {
-  idx
-    .iter()
-    .map(|edge_idx| s.edges.get(*edge_idx as usize).unwrap())
-    .collect()
-}
-
-fn find_reference_tree(
-  node: &SnapshotNode,
-  s: &SnapshotDeserialized,
-  depth: i64,
-  max_depth: i64,
-) -> NodeFullInfoReturnValue {
-  let to_edges = get_edges(&node.to_edge_index, s);
-
-  let to_nodes = to_edges
-    .iter()
-    .map(|edge| s.nodes.get(edge.to_node_index as usize).unwrap())
-    .collect::<Vec<&SnapshotNode>>();
-
-  let mut children: Vec<NodeFullInfoReturnValue> = vec![];
-  if depth < max_depth {
-    children = to_nodes
-      .iter()
-      .map(|node| find_reference_tree(node, s, depth + 1, max_depth))
-      .collect::<Vec<NodeFullInfoReturnValue>>();
-  }
-
-  let node_full_info = NodeFullInfoReturnValue {
-    abstract_info: NodeAbstractInfoReturnValue::new(node),
-    children,
-  };
-
-  node_full_info
 }
 
 pub fn get_node_references(
   s: &SnapshotDeserialized,
-  node_idx: i64,
-  max_depth: i64,
+  start_idx: i64,
+  path_idx: Vec<i64>,
 ) -> Option<NodeFullInfoReturnValue> {
-  let node = s.nodes.get(node_idx as usize);
+  let node = s.nodes.get(start_idx as usize);
 
   if node.is_none() {
     return None;
   }
 
-  return Some(find_reference_tree(node.unwrap(), s, 0, max_depth));
+  let mut node = node.unwrap();
+  let mut path_idx = path_idx;
+
+  loop {
+    println!("path_idx {:?}", path_idx);
+
+    if path_idx.is_empty() {
+      return Some(NodeFullInfoReturnValue::new(node, s, true));
+    }
+
+    let next_index = path_idx.remove(0) as u64;
+    let to_edges = node.get_to_edges(s);
+
+    match to_edges.iter().find(|&x| x.to_node_index == next_index) {
+      Some(to_edge) => match s.nodes.get(to_edge.to_node_index as usize) {
+        Some(next_node) => {
+          node = next_node;
+        }
+        None => {
+          return None;
+        }
+      },
+      None => {
+        panic!("not found next_index {next_index} in node: {:?}", node)
+      }
+    }
+  }
 }
