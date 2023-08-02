@@ -34,9 +34,7 @@ export const InstanceList = observer(() => {
             row: (item) => <Body>{item.selfSize}</Body>,
           },
         ]}
-        onRowClick={(item) => {
-          csSrv.getInitialNodeReference(item.nodeIdx);
-        }}
+        onRowClick={(item) => csSrv.getInitialNodeReference(item.nodeIdx)}
       />
     </div>
   );

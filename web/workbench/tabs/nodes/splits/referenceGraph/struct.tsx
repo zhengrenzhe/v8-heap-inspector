@@ -10,14 +10,15 @@ import { NodeFullInfoReturnValue } from "@/binding";
 
 function convertTreeData(
   start: NodeFullInfoReturnValue,
-  pos: number[]
+  pathIdx: number[]
 ): DataNode {
+  const path = pathIdx.concat(start.info.nodeIdx);
   const currentNode: DataNode = {
-    title: `${start.abstractInfo.name} @${start.abstractInfo.id}`,
-    nodeIdx: start.abstractInfo.nodeIdx,
-    key: `${pos.join("-")}`,
-    children: start.children
-      .map((toNode, idx) => convertTreeData(toNode, pos.concat(idx)))
+    title: `${start.info.name} @${start.info.id}`,
+    key: path.join("-"),
+    children: start.children.map((toNode) =>
+      convertTreeData(toNode, path),
+    ),
   };
 
   return currentNode;
@@ -29,8 +30,8 @@ export const Struct = observer(() => {
 
   const loadData = useCallback((treeNode: EventDataNode<DataNode>) => {
     return new Promise<void>(async (r) => {
-      console.log(treeNode);
-      await csSrv.loadNodeReference(parseInt(treeNode.nodeIdx.toString()));
+      const path = treeNode.key.toString().split("-").map((x) => parseInt(x));
+      await csSrv.loadNodeReference(path);
       r();
     });
   }, []);
@@ -39,7 +40,7 @@ export const Struct = observer(() => {
     return null;
   }
 
-  const treeData = convertTreeData(nodeReferences, [0]);
+  const treeData = convertTreeData(nodeReferences, []);
 
   return (
     <div className="split-root">

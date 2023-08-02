@@ -63,12 +63,19 @@ export class Local {
   }
 
   private get_node_references(req: Request, res: Response) {
-    const nodeIdx = (req.query.nodeIdx as string) ?? "";
-    const pathIdx = ([req.query.pathIdx as string[]] ?? []).flat();
-    const references = this.analyzer.getNodeReferences(
-      parseInt(nodeIdx),
-      pathIdx.map((idx) => parseInt(idx)),
-    );
+    const pathIdx = (() => {
+      if (!req.query.pathIdx) {
+        return [];
+      }
+      if (typeof req.query.pathIdx === "string") {
+        return [parseInt(req.query.pathIdx)];
+      }
+      if (Array.isArray(req.query.pathIdx)) {
+        return req.query.pathIdx.map((idx) => parseInt(idx as any));
+      }
+      return [];
+    })();
+    const references = this.analyzer.getNodeReferences(pathIdx);
     res.json(references);
   }
 }

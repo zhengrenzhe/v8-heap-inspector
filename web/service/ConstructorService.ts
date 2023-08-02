@@ -9,30 +9,21 @@ import {
 
 import { APIService } from "./APIService";
 
-const updateTreeData = (oldTree: NodeFullInfoReturnValue, newData:NodeFullInfoReturnValue): NodeFullInfoReturnValue => {
-  if(oldTree.abstractInfo.nodeIdx === newData.abstractInfo.nodeIdx) {
-    return newData;
-  }
+const updateTreeData = (
+  tree: NodeFullInfoReturnValue,
+  pathIdx: number[],
+  newData: NodeFullInfoReturnValue,
+): NodeFullInfoReturnValue => {
+  let node = tree;
 
-  return Object.assign({}, oldTree, {
-    children: oldTree.children.map((c) => updateTreeData(c, newData))
-  } )
-}
-  // list.map((node) => {
-  //   if (node.key === key) {
-  //     return {
-  //       ...node,
-  //       children,
-  //     };
-  //   }
-  //   if (node.children) {
-  //     return {
-  //       ...node,
-  //       children: updateTreeData(node.children, key, children),
-  //     };
-  //   }
-  //   return node;
-  // });
+  for (let i = 0; i < pathIdx.length; i++) {
+    const path = pathIdx[i]!;
+    node = node.children.find((c) => c.info.nodeIdx === path)!;
+  }
+  Object.assign(node, newData);
+
+  return Object.assign({}, tree);
+};
 
 class ViewModel {
   constructor() {
@@ -63,7 +54,7 @@ class ViewModel {
   };
 
   @observable.ref
-  public nodeReferences: NodeFullInfoReturnValue|null = null;
+  public nodeReferences: NodeFullInfoReturnValue | null = null;
 
   @observable
   public startNodeIdx = 0;
@@ -140,16 +131,20 @@ export class ConstructorService {
   };
 
   public getInitialNodeReference = async (nodeIdx: number) => {
-    const startNode = await this.apiService.getNodeReferences(nodeIdx, 0);
+    const startNode = await this.apiService.getNodeReferences([nodeIdx]);
     this.viewModel.setData("nodeReferences", startNode);
   };
 
-  public loadNodeReference = async (nodeIdx: number) => {
+  public loadNodeReference = async (pathIdx: number[]) => {
     if (!this.viewModel.nodeReferences) {
       return;
     }
-    const data = await this.apiService.getNodeReferences(nodeIdx, 1);
-    const rs = updateTreeData(this.viewModel.nodeReferences, data);
+    const data = await this.apiService.getNodeReferences(pathIdx);
+    const rs = updateTreeData(
+      this.viewModel.nodeReferences,
+      pathIdx.slice(1),
+      data,
+    );
     this.viewModel.setData("nodeReferences", rs);
   };
 }

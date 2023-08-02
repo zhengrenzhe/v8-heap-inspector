@@ -37,23 +37,21 @@ impl NodeFullInfoReturnValue {
 
 pub fn get_node_references(
   s: &SnapshotDeserialized,
-  start_idx: i64,
   path_idx: Vec<i64>,
-) -> Option<NodeFullInfoReturnValue> {
-  let node = s.nodes.get(start_idx as usize);
-
-  if node.is_none() {
-    return None;
+) -> NodeFullInfoReturnValue {
+  if path_idx.is_empty() {
+    panic!("path_idx is empty")
   }
 
-  let mut node = node.unwrap();
   let mut path_idx = path_idx;
+  let mut node = match s.nodes.get(path_idx.remove(0) as usize) {
+    Some(node) => node,
+    None => panic!("not found node when start"),
+  };
 
   loop {
-    println!("path_idx {:?}", path_idx);
-
     if path_idx.is_empty() {
-      return Some(NodeFullInfoReturnValue::new(node, s, true));
+      return NodeFullInfoReturnValue::new(node, s, true);
     }
 
     let next_index = path_idx.remove(0) as u64;
@@ -65,7 +63,10 @@ pub fn get_node_references(
           node = next_node;
         }
         None => {
-          return None;
+          panic!(
+            "not found to_node_index {} in edge: {:?}",
+            to_edge.to_node_index, to_edge
+          );
         }
       },
       None => {
