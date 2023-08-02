@@ -1,6 +1,8 @@
 import React, { useCallback } from "react";
 import { observer } from "mobx-react";
 import Tree from "rc-tree";
+import { Body } from "@leafygreen-ui/typography";
+import { VscJson, VscSymbolArray, VscSymbolString } from "react-icons/vsc";
 import { DataNode, EventDataNode } from "rc-tree/lib/interface";
 import "rc-tree/assets/index.css";
 
@@ -8,13 +10,39 @@ import { ConstructorService } from "@/web/service";
 import { useService } from "@/web/utils";
 import { NodeFullInfoReturnValue } from "@/binding";
 
+function getType(node: NodeFullInfoReturnValue) {
+  if (node.info.nodeType === "object") {
+    if (node.info.name === "Array") {
+      return "array";
+    }
+    return "object";
+  }
+  if (node.info.nodeType === "string") {
+    return "string";
+  }
+  if (node.info.nodeType === "object shape") {
+    return "object shape";
+  }
+  return "unknown";
+}
+
+function getNodeIcon(node: NodeFullInfoReturnValue) {
+  switch (getType(node)) {
+    case "object": return <VscJson />;
+    case "array": return <VscSymbolArray />;
+    case "string": return <VscSymbolString />;
+    default: return null;
+  }
+}
+
 function convertTreeData(
   start: NodeFullInfoReturnValue,
   pathIdx: number[]
 ): DataNode {
   const path = pathIdx.concat(start.info.nodeIdx);
   const currentNode: DataNode = {
-    title: `${start.info.name} @${start.info.id}`,
+    title: <Body>{`${start.fromEdgeName} :: ${start.info.name} @${start.info.id}`}</Body>,
+    icon: getNodeIcon(start),
     key: path.join("-"),
     children: start.children.map((toNode) =>
       convertTreeData(toNode, path),
@@ -40,12 +68,12 @@ export const Struct = observer(() => {
     return null;
   }
 
-  const treeData = convertTreeData(nodeReferences, []);
+  console.log(nodeReferences);
 
   return (
     <div className="split-root">
       <Tree
-        treeData={[treeData]}
+        treeData={[convertTreeData(nodeReferences, [])]}
         height={300}
         virtual={true}
         loadData={loadData}

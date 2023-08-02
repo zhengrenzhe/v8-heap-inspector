@@ -11,11 +11,11 @@ pub struct NodeAbstractInfoReturnValue {
 }
 
 impl NodeAbstractInfoReturnValue {
-  pub fn new(node: &SnapshotNode) -> NodeAbstractInfoReturnValue {
+  pub fn new(node: &SnapshotNode, s: &SnapshotDeserialized) -> NodeAbstractInfoReturnValue {
     NodeAbstractInfoReturnValue {
       node_idx: node.node_idx as i64,
       node_type: node.get_node_type().to_string(),
-      name: node.name.clone(),
+      name: node.get_name(s),
       id: node.id as i64,
       self_size: node.self_size as i64,
     }
@@ -29,9 +29,9 @@ pub fn get_nodes_abstract_info_by_constructor_name(
   let mut nodes: Vec<NodeAbstractInfoReturnValue> = Vec::new();
 
   for node in s.nodes.iter() {
-    let cls = &node.get_node_cls_name();
+    let cls = &node.get_node_cls_name(s);
     if cls == constructor_name {
-      nodes.push(NodeAbstractInfoReturnValue::new(node));
+      nodes.push(NodeAbstractInfoReturnValue::new(node, s));
     }
   }
 

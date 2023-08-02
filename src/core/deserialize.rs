@@ -7,6 +7,8 @@ use petgraph::Graph;
 pub fn deserialize(slice: &[u8]) -> SnapshotDeserialized {
   let raw: SnapshotFileRaw = serde_json::from_slice(slice).unwrap();
 
+  let strings = raw.strings;
+
   let mut nodes: Vec<SnapshotNode> = Vec::with_capacity(raw.snapshot.node_count as usize);
   let mut edges: Vec<SnapshotEdge> = Vec::with_capacity(raw.snapshot.edge_count as usize);
 
@@ -24,8 +26,7 @@ pub fn deserialize(slice: &[u8]) -> SnapshotDeserialized {
     let node_type_index = all_nodes[node_base_idx] as usize;
 
     // name index
-    let name_index = all_nodes[node_base_idx + 1];
-    let name = raw.strings[name_index as usize].clone();
+    let name_index = all_nodes[node_base_idx + 1] as usize;
 
     // id
     let id = all_nodes[node_base_idx + 2];
@@ -44,8 +45,8 @@ pub fn deserialize(slice: &[u8]) -> SnapshotDeserialized {
 
     nodes.push(SnapshotNode {
       node_idx: node_idx as u64,
-      name,
       node_type_index,
+      name_index,
       id,
       self_size,
       edge_count,
@@ -109,5 +110,6 @@ pub fn deserialize(slice: &[u8]) -> SnapshotDeserialized {
     nodes,
     edges,
     graph,
+    strings,
   }
 }

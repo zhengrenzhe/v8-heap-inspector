@@ -19,7 +19,7 @@ pub fn get_all_constructors(s: &SnapshotDeserialized) -> GetAllConstructorsRetur
   let mut constructors: HashMap<String, ConstructorItemDetailReturnValue> = HashMap::new();
 
   for node in s.nodes.iter() {
-    let cls = &node.get_node_cls_name();
+    let cls = &node.get_node_cls_name(s);
     if constructors.contains_key(cls) {
       let v: &mut ConstructorItemDetailReturnValue = constructors.get_mut(cls).unwrap();
       v.count += 1;

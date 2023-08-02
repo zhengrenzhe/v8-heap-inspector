@@ -10,8 +10,8 @@ pub struct SnapshotNode {
   pub node_idx: u64,
   /// node type index
   pub node_type_index: usize,
-  /// node name field
-  pub name: String,
+  /// node index field
+  pub name_index: usize,
   /// unique node id in v8 snapshot
   pub id: u64,
   /// node self size
@@ -33,7 +33,7 @@ impl SnapshotNode {
     NODE_TYPES[self.node_type_index]
   }
 
-  pub fn get_node_cls_name(&self) -> String {
+  pub fn get_node_cls_name(&self, s: &SnapshotDeserialized) -> String {
     let node_type = self.get_node_type();
 
     if node_type == NODE_TYPE_HIDDEN {
@@ -41,7 +41,7 @@ impl SnapshotNode {
     }
 
     if node_type == NODE_TYPE_NATIVE || node_type == NODE_TYPE_OBJECT {
-      return self.name.to_string();
+      return self.get_name(s).to_string();
     }
 
     if node_type == NODE_TYPE_CODE {
@@ -49,6 +49,10 @@ impl SnapshotNode {
     }
 
     vec!["(", node_type, ")"].join("")
+  }
+
+  pub fn get_name(&self, s: &SnapshotDeserialized) -> String {
+    s.strings[self.name_index].clone()
   }
 
   pub fn get_to_edges<'a>(&self, s: &'a SnapshotDeserialized) -> Vec<&'a SnapshotEdge> {
@@ -87,10 +91,15 @@ impl SnapshotEdge {
   pub fn get_edge_type(&self) -> &'static str {
     EDGE_TYPES[self.edge_type_index]
   }
+
+  pub fn get_edge_name<'a>(&self, s: &'a SnapshotDeserialized) -> String {
+    s.strings[self.name_or_index_raw as usize].clone()
+  }
 }
 
 pub struct SnapshotDeserialized {
   pub nodes: Vec<SnapshotNode>,
   pub edges: Vec<SnapshotEdge>,
+  pub strings: Vec<String>,
   pub graph: Graph<usize, usize, Directed>,
 }

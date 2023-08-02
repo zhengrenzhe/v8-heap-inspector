@@ -1,12 +1,14 @@
-use crate::core::{SnapshotDeserialized, SnapshotNode};
+use crate::core::{SnapshotDeserialized, SnapshotEdge, SnapshotNode};
 
 use super::NodeAbstractInfoReturnValue;
 
-#[derive(Debug)]
 #[napi(object)]
 pub struct NodeFullInfoReturnValue {
   pub info: NodeAbstractInfoReturnValue,
+  pub has_children: bool,
   pub children: Vec<NodeFullInfoReturnValue>,
+  pub from_edge_type: String,
+  pub from_edge_name: String,
 }
 
 impl NodeFullInfoReturnValue {
@@ -14,6 +16,7 @@ impl NodeFullInfoReturnValue {
     n: &SnapshotNode,
     s: &SnapshotDeserialized,
     with_children: bool,
+    from_edge: Option<&SnapshotEdge>,
   ) -> NodeFullInfoReturnValue {
     let mut children: Vec<NodeFullInfoReturnValue> = vec![];
 
@@ -21,7 +24,7 @@ impl NodeFullInfoReturnValue {
       for to_edge in n.get_to_edges(s) {
         match s.nodes.get(to_edge.to_node_index as usize) {
           Some(child) => {
-            children.push(NodeFullInfoReturnValue::new(child, s, false));
+            children.push(NodeFullInfoReturnValue::new(child, s, false, Some(to_edge)));
           }
           None => {}
         }
@@ -29,8 +32,17 @@ impl NodeFullInfoReturnValue {
     }
 
     return NodeFullInfoReturnValue {
-      info: NodeAbstractInfoReturnValue::new(n),
+      info: NodeAbstractInfoReturnValue::new(n, s),
+      has_children: n.to_edge_index.is_empty(),
       children,
+      from_edge_type: match from_edge {
+        Some(edge) => edge.get_edge_type().to_string(),
+        None => "".to_string(),
+      },
+      from_edge_name: match from_edge {
+        Some(edge) => edge.get_edge_name(s),
+        None => "".to_string(),
+      },
     };
   }
 }
@@ -51,7 +63,7 @@ pub fn get_node_references(
 
   loop {
     if path_idx.is_empty() {
-      return NodeFullInfoReturnValue::new(node, s, true);
+      return NodeFullInfoReturnValue::new(node, s, true, None);
     }
 
     let next_index = path_idx.remove(0) as u64;

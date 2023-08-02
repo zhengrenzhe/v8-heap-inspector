@@ -8,6 +8,7 @@ import {
 } from "@/binding";
 
 import { APIService } from "./APIService";
+import { omit } from "lodash";
 
 const updateTreeData = (
   tree: NodeFullInfoReturnValue,
@@ -20,7 +21,7 @@ const updateTreeData = (
     const path = pathIdx[i]!;
     node = node.children.find((c) => c.info.nodeIdx === path)!;
   }
-  Object.assign(node, newData);
+  Object.assign(node, omit(newData, ["fromEdgeName", "fromEdgeType"]));
 
   return Object.assign({}, tree);
 };
