@@ -2,6 +2,7 @@ import React from "react";
 import { FaCircleNodes } from "react-icons/fa6";
 import { Allotment } from "allotment";
 import "allotment/dist/style.css";
+import { Caption1 } from "@fluentui/react-components";
 
 import { contributionImplement } from "@/web/utils";
 import { WorkbenchTabContribution } from "@/web/contribution";
@@ -47,7 +48,7 @@ export class NodesTabContribution extends WorkbenchTabContribution {
             key={p.title}
           >
             <div className="nodes-pane">
-              <span className="nodes-pane-title">{p.title}</span>
+              <Caption1 className="nodes-pane-title">{p.title}</Caption1>
               <p.render />
             </div>
           </Allotment.Pane>

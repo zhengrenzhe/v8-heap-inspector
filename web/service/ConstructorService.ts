@@ -44,9 +44,6 @@ class ViewModel {
   public inited = false;
 
   @observable
-  public showFilters = false;
-
-  @observable
   public sortSizeMode: "asc" | "desc" | undefined = undefined;
 
   @observable

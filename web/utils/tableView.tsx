@@ -1,4 +1,5 @@
 import React, { ReactNode } from "react";
+import { Text, tokens } from "@fluentui/react-components";
 import { TableVirtuoso } from "react-virtuoso";
 
 import "./tableView.less";
@@ -30,6 +31,10 @@ export function TableList<D>(props: ITableListProps<D>) {
             {...props}
             style={{
               ...style,
+              backgroundColor:
+                props["data-index"] % 2 === 0
+                  ? tokens.colorNeutralBackground4Hover
+                  : tokens.colorNeutralBackground4Pressed,
             }}
             className="list-table-row"
           />
@@ -39,9 +44,12 @@ export function TableList<D>(props: ITableListProps<D>) {
       fixedItemHeight={24}
       fixedHeaderContent={() => (
         <tr className="list-table-head">
-          {props.column.map((item) => (
-            <th style={{ width: item.width }} key={item.columnTitle}>
-              <span>{item.columnTitle}</span>
+          {props.column.map((item, index) => (
+            <th
+              style={{ width: item.width, paddingLeft: index === 0 ? 8 : 0 }}
+              key={item.columnTitle}
+            >
+              <Text weight="semibold">{item.columnTitle}</Text>
             </th>
           ))}
         </tr>

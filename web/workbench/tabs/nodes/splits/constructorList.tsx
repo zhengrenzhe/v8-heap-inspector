@@ -1,9 +1,17 @@
 import React from "react";
 import { observer } from "mobx-react";
-import { BsSortDown, BsSortUp, BsFilterCircle } from "react-icons/bs";
+import { BsFilter, BsSortDown, BsSortUp } from "react-icons/bs";
 import { VscInspect } from "react-icons/vsc";
 import Highlighter from "react-highlight-words";
-import { Button, Input, Spinner } from "@fluentui/react-components";
+import {
+  Button,
+  Input,
+  Popover,
+  PopoverSurface,
+  PopoverTrigger,
+  Spinner,
+  Text,
+} from "@fluentui/react-components";
 
 import { Copy, useService } from "@/web/utils";
 import { ConstructorService } from "@/web/service";
@@ -11,51 +19,47 @@ import { TableList } from "@/web/utils/";
 
 const FilterBar = observer(() => {
   const csSrv = useService(ConstructorService);
-  const { showFilters, sortSizeMode, toggleSortSizeMode, setFilter, setData } =
-    csSrv.viewModel;
+  const { sortSizeMode, toggleSortSizeMode, setFilter } = csSrv.viewModel;
 
   return (
-    <div className="filter-actions" style={{ padding: "0 8px" }}>
-      <Button
-        aria-label="filter"
-        title="filter by name"
-        icon={<BsFilterCircle />}
-        onClick={() => {
-          setData("showFilters", !showFilters);
-          setFilter("constructorName", "");
-        }}
-      />
+    <div className="filter-actions" style={{ padding: "0 8px 4px" }}>
+      <Popover>
+        <PopoverTrigger disableButtonEnhancement>
+          <Button
+            size="small"
+            icon={<BsFilter style={{ fontSize: 15 }} />}
+            style={{ borderRadius: "100%" }}
+          />
+        </PopoverTrigger>
 
-      <Button
-        aria-label="filter"
-        title="sory by self size"
-        onClick={() => toggleSortSizeMode()}
-        style={{ margin: 4 }}
-        icon={
-          sortSizeMode === "asc" ? (
-            <BsSortUp />
-          ) : sortSizeMode === "desc" ? (
-            <BsSortDown />
-          ) : (
-            <BsSortDown />
-          )
-        }
-      />
-
-      {showFilters && (
-        <Input
-          style={{ margin: "6px 0" }}
-          placeholder="filter by constructor name"
-          autoFocus
-          onChange={(e) => setFilter("constructorName", e.target.value.trim())}
-          onKeyDown={(e) => {
-            if (e.key === "Escape") {
-              setFilter("constructorName", "");
-              setData("showFilters", false);
-            }
-          }}
-        />
-      )}
+        <PopoverSurface>
+          <div>
+            <Input
+              style={{ margin: "6px 0" }}
+              placeholder="filter by constructor name"
+              autoFocus
+              onChange={(e) =>
+                setFilter("constructorName", e.target.value.trim())
+              }
+            />
+            <Button
+              aria-label="filter"
+              title="sory by self size"
+              onClick={() => toggleSortSizeMode()}
+              style={{ margin: 4 }}
+              icon={
+                sortSizeMode === "asc" ? (
+                  <BsSortUp />
+                ) : sortSizeMode === "desc" ? (
+                  <BsSortDown />
+                ) : (
+                  <BsSortDown />
+                )
+              }
+            />
+          </div>
+        </PopoverSurface>
+      </Popover>
     </div>
   );
 });
@@ -68,6 +72,7 @@ export const ConstructorList = observer(() => {
   return (
     <div className="split-root">
       <FilterBar />
+
       {!inited ? (
         <Spinner
           style={{
@@ -79,6 +84,7 @@ export const ConstructorList = observer(() => {
           }}
         />
       ) : null}
+
       {inited ? (
         <TableList
           data={constructors}
@@ -88,13 +94,13 @@ export const ConstructorList = observer(() => {
               row: (item) => {
                 return (
                   <>
-                    <span>
+                    <Text font="monospace">
                       <Highlighter
                         searchWords={[csSrv.viewModel.filter.constructorName]}
                         autoEscape={true}
                         textToHighlight={item.name}
                       />
-                    </span>
+                    </Text>
                     <Copy value={item.name} cls="list-table-td-name-copy" />
                     <VscInspect
                       onClick={() => csSrv.getInstances(item.name)}
