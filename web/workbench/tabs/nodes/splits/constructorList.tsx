@@ -2,11 +2,8 @@ import React from "react";
 import { observer } from "mobx-react";
 import { BsSortDown, BsSortUp, BsFilterCircle } from "react-icons/bs";
 import { VscInspect } from "react-icons/vsc";
-import { Body, InlineCode } from "@leafygreen-ui/typography";
-import IconButton from "@leafygreen-ui/icon-button";
-import TextInput from "@leafygreen-ui/text-input";
-import { Spinner } from "@leafygreen-ui/loading-indicator";
 import Highlighter from "react-highlight-words";
+import { Button, Input, Spinner } from "@fluentui/react-components";
 
 import { Copy, useService } from "@/web/utils";
 import { ConstructorService } from "@/web/service";
@@ -19,38 +16,34 @@ const FilterBar = observer(() => {
 
   return (
     <div className="filter-actions" style={{ padding: "0 8px" }}>
-      <IconButton
+      <Button
         aria-label="filter"
         title="filter by name"
-        active={showFilters}
+        icon={<BsFilterCircle />}
         onClick={() => {
           setData("showFilters", !showFilters);
           setFilter("constructorName", "");
         }}
-      >
-        <BsFilterCircle />
-      </IconButton>
-      <IconButton
+      />
+
+      <Button
         aria-label="filter"
         title="sory by self size"
-        active={!!sortSizeMode}
         onClick={() => toggleSortSizeMode()}
         style={{ margin: 4 }}
-      >
-        {sortSizeMode === "asc" ? (
-          <BsSortUp />
-        ) : sortSizeMode === "desc" ? (
-          <BsSortDown />
-        ) : (
-          <BsSortDown />
-        )}
-      </IconButton>
+        icon={
+          sortSizeMode === "asc" ? (
+            <BsSortUp />
+          ) : sortSizeMode === "desc" ? (
+            <BsSortDown />
+          ) : (
+            <BsSortDown />
+          )
+        }
+      />
 
       {showFilters && (
-        <TextInput
-          aria-labelledby="filter"
-          sizeVariant="xsmall"
-          baseFontSize={13}
+        <Input
           style={{ margin: "6px 0" }}
           placeholder="filter by constructor name"
           autoFocus
@@ -77,8 +70,6 @@ export const ConstructorList = observer(() => {
       <FilterBar />
       {!inited ? (
         <Spinner
-          description="Loading constructors..."
-          displayOption="xlarge-vertical"
           style={{
             display: "flex",
             flexDirection: "column",
@@ -97,13 +88,13 @@ export const ConstructorList = observer(() => {
               row: (item) => {
                 return (
                   <>
-                    <InlineCode>
+                    <span>
                       <Highlighter
                         searchWords={[csSrv.viewModel.filter.constructorName]}
                         autoEscape={true}
                         textToHighlight={item.name}
                       />
-                    </InlineCode>
+                    </span>
                     <Copy value={item.name} cls="list-table-td-name-copy" />
                     <VscInspect
                       onClick={() => csSrv.getInstances(item.name)}
@@ -116,13 +107,13 @@ export const ConstructorList = observer(() => {
             },
             {
               columnTitle: "Count",
-              row: (item) => <Body>{item.count}</Body>,
+              row: (item) => <span>{item.count}</span>,
               rowTitle: (item) => item.count.toString(),
               width: 60,
             },
             {
               columnTitle: "Self Size",
-              row: (item) => <Body>{item.selfSize}</Body>,
+              row: (item) => <span>{item.selfSize}</span>,
               rowTitle: (item) => item.selfSize.toString(),
               width: 80,
             },

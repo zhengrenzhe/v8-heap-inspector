@@ -1,10 +1,10 @@
 import React from "react";
-import { Body } from "@leafygreen-ui/typography";
+import { FaCircleNodes } from "react-icons/fa6";
 import { Allotment } from "allotment";
 import "allotment/dist/style.css";
+
 import { contributionImplement } from "@/web/utils";
 import { WorkbenchTabContribution } from "@/web/contribution";
-import { palette } from "@leafygreen-ui/palette";
 
 import { ConstructorList } from "./splits/constructorList";
 import { InstanceList } from "./splits/instanceList";
@@ -35,6 +35,8 @@ const pane = [
 export class NodesTabContribution extends WorkbenchTabContribution {
   public name = "Nodes";
 
+  public icon = (<FaCircleNodes />);
+
   public render = () => (
     <div className="nodes-view">
       <Allotment>
@@ -45,12 +47,7 @@ export class NodesTabContribution extends WorkbenchTabContribution {
             key={p.title}
           >
             <div className="nodes-pane">
-              <Body
-                className="nodes-pane-title"
-                style={{ background: palette.gray.light3 }}
-              >
-                {p.title}
-              </Body>
+              <span className="nodes-pane-title">{p.title}</span>
               <p.render />
             </div>
           </Allotment.Pane>

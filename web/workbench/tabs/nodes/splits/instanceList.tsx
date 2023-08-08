@@ -1,21 +1,20 @@
 import React from "react";
 import { observer } from "mobx-react";
-import { Body } from "@leafygreen-ui/typography";
+import { Badge } from "@fluentui/react-components";
 
 import { useService } from "@/web/utils";
 import { ConstructorService } from "@/web/service";
 import { TableList } from "@/web/utils";
-import Badge from "@leafygreen-ui/badge";
 
 export const InstanceList = observer(() => {
   const csSrv = useService(ConstructorService);
 
   if (!csSrv.viewModel.instancesReady) {
-    return <Body>Please select constructor</Body>;
+    return <span>Please select constructor</span>;
   }
 
   if (csSrv.viewModel.instances.length === 0) {
-    return <Body>No instances</Body>;
+    return <span>No instances</span>;
   }
 
   return (
@@ -23,15 +22,15 @@ export const InstanceList = observer(() => {
       <TableList
         data={csSrv.viewModel.instances}
         column={[
-          { columnTitle: "Name", row: (item) => <Body>{item.name}</Body> },
-          { columnTitle: "ID", row: (item) => <Body>{item.id}</Body> },
+          { columnTitle: "Name", row: (item) => <span>{item.name}</span> },
+          { columnTitle: "ID", row: (item) => <span>{item.id}</span> },
           {
             columnTitle: "Type",
-            row: (item) => <Badge variant="green">{item.nodeType}</Badge>,
+            row: (item) => <Badge>{item.nodeType}</Badge>,
           },
           {
             columnTitle: "Self Size",
-            row: (item) => <Body>{item.selfSize}</Body>,
+            row: (item) => <span>{item.selfSize}</span>,
           },
         ]}
         onRowClick={(item) => csSrv.getInitialNodeReference(item.nodeIdx)}

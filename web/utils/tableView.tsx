@@ -1,7 +1,5 @@
 import React, { ReactNode } from "react";
 import { TableVirtuoso } from "react-virtuoso";
-import { palette } from "@leafygreen-ui/palette";
-import { Body } from "@leafygreen-ui/typography";
 
 import "./tableView.less";
 
@@ -32,8 +30,6 @@ export function TableList<D>(props: ITableListProps<D>) {
             {...props}
             style={{
               ...style,
-              backgroundColor:
-                props["data-index"] % 2 ? palette.gray.light3 : undefined,
             }}
             className="list-table-row"
           />
@@ -45,7 +41,7 @@ export function TableList<D>(props: ITableListProps<D>) {
         <tr className="list-table-head">
           {props.column.map((item) => (
             <th style={{ width: item.width }} key={item.columnTitle}>
-              <Body weight="medium">{item.columnTitle}</Body>
+              <span>{item.columnTitle}</span>
             </th>
           ))}
         </tr>

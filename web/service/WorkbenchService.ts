@@ -2,19 +2,19 @@ import { makeAutoObservable } from "mobx";
 
 import { injectable } from "@/web/utils";
 
-@injectable()
-export class WorkbenchService {
-  public model = new WorkbenchModel();
-}
-
 class WorkbenchModel {
   constructor() {
     makeAutoObservable(this);
   }
 
-  public tabIndex = 0;
+  public activeTab = "";
 
-  public setTabIndex = (index: number) => {
-    this.tabIndex = index;
-  };
+  public setActiveTabName(tabName: string) {
+    this.activeTab = tabName;
+  }
+}
+
+@injectable()
+export class WorkbenchService {
+  public model = new WorkbenchModel();
 }

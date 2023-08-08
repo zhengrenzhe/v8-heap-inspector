@@ -5,5 +5,7 @@ import { ComponentType } from "react";
 export abstract class WorkbenchTabContribution {
   public abstract name: string;
 
+  public abstract icon: JSX.Element;
+
   public abstract render: ComponentType;
 }
