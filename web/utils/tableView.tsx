@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { Text, tokens } from "@fluentui/react-components";
+import { Caption1Stronger, tokens } from "@fluentui/react-components";
 import { TableVirtuoso } from "react-virtuoso";
 
 import "./tableView.less";
@@ -49,7 +49,7 @@ export function TableList<D>(props: ITableListProps<D>) {
               style={{ width: item.width, paddingLeft: index === 0 ? 8 : 0 }}
               key={item.columnTitle}
             >
-              <Text weight="semibold">{item.columnTitle}</Text>
+              <Caption1Stronger>{item.columnTitle}</Caption1Stronger>
             </th>
           ))}
         </tr>

@@ -94,7 +94,15 @@ export const ConstructorList = observer(() => {
               row: (item) => {
                 return (
                   <>
-                    <Text font="monospace">
+                    <Text
+                      font="monospace"
+                      size={200}
+                      style={{
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
                       <Highlighter
                         searchWords={[csSrv.viewModel.filter.constructorName]}
                         autoEscape={true}

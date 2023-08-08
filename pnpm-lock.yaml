@@ -70,6 +70,9 @@ devDependencies:
   '@napi-rs/cli':
     specifier: ^2.16.2
     version: 2.16.2
+  '@parcel/config-default':
+    specifier: ^2.9.3
+    version: 2.9.3(@parcel/core@2.9.3)
   '@parcel/transformer-less':
     specifier: 2.9.3
     version: 2.9.3(@parcel/core@2.9.3)
@@ -115,6 +118,9 @@ devDependencies:
   parcel:
     specifier: ^2.9.3
     version: 2.9.3
+  parcel-reporter-static-files-copy:
+    specifier: ^1.5.2
+    version: 1.5.2(@parcel/core@2.9.3)
   prettier:
     specifier: ^3.0.1
     version: 3.0.1
@@ -4067,6 +4073,15 @@ packages:
 
   /ordered-binary@1.4.1:
     resolution: {integrity: sha512-9LtiGlPy982CsgxZvJGNNp2/NnrgEr6EAyN3iIEP3/8vd3YLgAZQHbQ75ZrkfBRGrNg37Dk3U6tuVb+B4Xfslg==}
+    dev: true
+
+  /parcel-reporter-static-files-copy@1.5.2(@parcel/core@2.9.3):
+    resolution: {integrity: sha512-NyIP8dOBj4WiZYAfKKTFWrMh8/kjrP72673G3hs7TOoT/30QWwUQpRA7oW4IxbjY2ICOo2sV06Z1lzPKCDbrGA==}
+    engines: {parcel: ^2.0.0-beta.1}
+    dependencies:
+      '@parcel/plugin': 2.9.3(@parcel/core@2.9.3)
+    transitivePeerDependencies:
+      - '@parcel/core'
     dev: true
 
   /parcel@2.9.3:

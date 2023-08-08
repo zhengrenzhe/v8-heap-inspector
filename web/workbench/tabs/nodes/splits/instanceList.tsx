@@ -10,7 +10,7 @@ export const InstanceList = observer(() => {
   const csSrv = useService(ConstructorService);
 
   if (!csSrv.viewModel.instancesReady) {
-    return <span>Please select constructor</span>;
+    return null;
   }
 
   if (csSrv.viewModel.instances.length === 0) {
