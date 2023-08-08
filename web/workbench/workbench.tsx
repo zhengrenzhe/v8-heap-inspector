@@ -5,7 +5,6 @@ import {
   Divider,
   FluentProvider,
   Tooltip,
-  tokens,
   webLightTheme,
   Image,
 } from "@fluentui/react-components";
@@ -22,10 +21,7 @@ const SideBar = observer(() => {
   const wbService = useService(WorkbenchService);
 
   return (
-    <div
-      id="workbench-sidebar"
-      style={{ backgroundColor: tokens.colorNeutralForeground1Static }}
-    >
+    <div id="workbench-sidebar">
       <Image src="https://v8.dev/_img/v8-outline.svg" style={{ width: 26 }} />
       {tabList.map((t, i) => (
         <Tooltip
@@ -41,9 +37,6 @@ const SideBar = observer(() => {
                 fontSize: "15px",
               },
             })}
-            style={{
-              color: tokens.colorNeutralForegroundOnBrand,
-            }}
             className={[
               wbService.model.activeTab
                 ? wbService.model.activeTab === t.name
