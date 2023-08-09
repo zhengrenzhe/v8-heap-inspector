@@ -7,7 +7,9 @@ export const ReferenceGraph = () => {
     <div className="split-root">
       <Allotment vertical>
         <Allotment.Pane minSize={300} preferredSize={300} key="struct">
-          <Struct />
+          <div className="nodes-pane">
+            <Struct />
+          </div>
         </Allotment.Pane>
         <Allotment.Pane key="graph">B</Allotment.Pane>
       </Allotment>

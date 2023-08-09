@@ -4,6 +4,7 @@ import Tree from "rc-tree";
 import { VscJson, VscSymbolArray, VscSymbolString } from "react-icons/vsc";
 import { DataNode, EventDataNode } from "rc-tree/lib/interface";
 import "rc-tree/assets/index.css";
+import { Text } from "@fluentui/react-components";
 
 import { ConstructorService } from "@/web/service";
 import { useService } from "@/web/utils";
@@ -71,10 +72,12 @@ export const Struct = observer(() => {
   }, []);
 
   if (!nodeReferences) {
-    return null;
+    return (
+      <Text align="center" style={{ margin: "auto" }}>
+        No instance selected
+      </Text>
+    );
   }
-
-  console.log(nodeReferences);
 
   return (
     <div className="split-root">
