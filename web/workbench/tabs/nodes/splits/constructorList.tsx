@@ -1,6 +1,11 @@
 import React from "react";
 import { observer } from "mobx-react";
-import { BsFilter, BsSortDown, BsSortUp } from "react-icons/bs";
+import {
+  BsSortAlphaDown,
+  BsFilter,
+  BsSortDown,
+  BsSortUp,
+} from "react-icons/bs";
 import { VscInspect } from "react-icons/vsc";
 import Highlighter from "react-highlight-words";
 import {
@@ -71,7 +76,7 @@ const FilterBar = observer(() => {
           ) : sortSizeMode === "desc" ? (
             <BsSortDown style={{ fontSize: 15 }} />
           ) : (
-            <BsSortDown style={{ fontSize: 15 }} />
+            <BsSortAlphaDown style={{ fontSize: 15 }} />
           )
         }
       />
