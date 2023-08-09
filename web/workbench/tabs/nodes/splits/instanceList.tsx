@@ -12,11 +12,19 @@ export const InstanceList = observer(() => {
   const csSrv = useService(ConstructorService);
 
   if (!csSrv.viewModel.instancesReady) {
-    return null;
+    return (
+      <Text align="center" style={{ margin: "auto" }}>
+        No constructor selected
+      </Text>
+    );
   }
 
   if (csSrv.viewModel.instances.length === 0) {
-    return <Text>No instances</Text>;
+    return (
+      <Text align="center" style={{ margin: "auto" }}>
+        No instances
+      </Text>
+    );
   }
 
   return (
