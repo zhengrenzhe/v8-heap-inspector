@@ -35,7 +35,15 @@ export const InstanceList = observer(() => {
           {
             columnTitle: "Name",
             row: (item) => (
-              <Text font="monospace" size={200}>
+              <Text
+                font="monospace"
+                size={200}
+                style={{
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
                 {item.name}
               </Text>
             ),
