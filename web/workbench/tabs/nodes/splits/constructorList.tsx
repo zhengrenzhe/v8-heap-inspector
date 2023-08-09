@@ -17,6 +17,7 @@ import {
   PopoverTrigger,
   Spinner,
   Text,
+  tokens,
   useId,
 } from "@fluentui/react-components";
 
@@ -128,6 +129,14 @@ export const ConstructorList = observer(() => {
                         searchWords={[csSrv.viewModel.filter.constructorName]}
                         autoEscape={true}
                         textToHighlight={item.name}
+                        highlightStyle={{
+                          background: "transparent",
+                          textDecoration: "underline",
+                          textDecorationStyle: "wavy",
+                          textDecorationColor:
+                            tokens.colorNeutralForeground2BrandPressed,
+                          textDecorationThickness: "auto",
+                        }}
                       />
                     </Text>
                     <Copy value={item.name} cls="list-table-td-name-copy" />
