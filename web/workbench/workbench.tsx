@@ -7,6 +7,8 @@ import {
   Tooltip,
   webLightTheme,
   Image,
+  webDarkTheme,
+  tokens,
 } from "@fluentui/react-components";
 
 import { useContributions, useService } from "@/web/utils";
@@ -15,6 +17,7 @@ import { WorkbenchService } from "@/web/service";
 
 import "./tabs";
 import "./workbench.less";
+import { MdDarkMode, MdLightMode } from "react-icons/md";
 
 const SideBar = observer(() => {
   const tabList = useContributions(WorkbenchTabContribution);
@@ -23,6 +26,7 @@ const SideBar = observer(() => {
   return (
     <div id="workbench-sidebar">
       <Image src="https://v8.dev/_img/v8-outline.svg" style={{ width: 26 }} />
+
       {tabList.map((t, i) => (
         <Tooltip
           key={t.name}
@@ -47,10 +51,27 @@ const SideBar = observer(() => {
                 : "",
               "workbench-sidebar-button",
             ].join(" ")}
-            onClick={() => wbService.model.setActiveTabName(t.name)}
+            onClick={() => wbService.model.setData("activeTab", t.name)}
           />
         </Tooltip>
       ))}
+
+      <Button
+        appearance="transparent"
+        icon={
+          wbService.model.theme === "light" ? <MdLightMode /> : <MdDarkMode />
+        }
+        onClick={() => {
+          wbService.model.setData(
+            "theme",
+            wbService.model.theme === "light" ? "dark" : "light",
+          );
+        }}
+        style={{
+          color: tokens.colorNeutralForegroundOnBrand,
+          marginTop: "auto",
+        }}
+      />
     </div>
   );
 });
@@ -83,8 +104,13 @@ const Pane = observer(() => {
 });
 
 export const Workbench = observer(() => {
+  const wbService = useService(WorkbenchService);
+
   return (
-    <FluentProvider theme={webLightTheme} id="FluentProvider">
+    <FluentProvider
+      theme={wbService.model.theme === "light" ? webLightTheme : webDarkTheme}
+      id="FluentProvider"
+    >
       <div id="workbench-root">
         <SideBar />
         <Divider vertical id="workbench-divider" />

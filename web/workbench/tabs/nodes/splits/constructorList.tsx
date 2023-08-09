@@ -69,8 +69,9 @@ export const ConstructorList = observer(() => {
                           textDecoration: "underline",
                           textDecorationStyle: "wavy",
                           textDecorationColor:
-                            tokens.colorNeutralForeground2BrandPressed,
+                            tokens.colorPaletteLightGreenBorder2,
                           textDecorationThickness: "auto",
+                          color: tokens.colorNeutralForeground1,
                         }}
                       />
                     </Text>
