@@ -6,11 +6,13 @@ import Highlighter from "react-highlight-words";
 import {
   Button,
   Input,
+  Label,
   Popover,
   PopoverSurface,
   PopoverTrigger,
   Spinner,
   Text,
+  useId,
 } from "@fluentui/react-components";
 
 import { Copy, useService } from "@/web/utils";
@@ -21,9 +23,18 @@ const FilterBar = observer(() => {
   const csSrv = useService(ConstructorService);
   const { sortSizeMode, toggleSortSizeMode, setFilter } = csSrv.viewModel;
 
+  const inputId = useId("input-with-placeholder");
+
   return (
     <div className="filter-actions" style={{ padding: "0 8px 4px" }}>
-      <Popover>
+      <Popover
+        positioning={{
+          position: "after",
+          align: "bottom",
+          offset: 10,
+        }}
+        size="small"
+      >
         <PopoverTrigger disableButtonEnhancement>
           <Button
             size="small"
@@ -33,33 +44,37 @@ const FilterBar = observer(() => {
         </PopoverTrigger>
 
         <PopoverSurface>
-          <div>
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <Label htmlFor={inputId}>
+              <Text size={200}>Filter by constructor name</Text>
+            </Label>
             <Input
-              style={{ margin: "6px 0" }}
-              placeholder="filter by constructor name"
+              placeholder=""
+              id={inputId}
               autoFocus
               onChange={(e) =>
                 setFilter("constructorName", e.target.value.trim())
               }
             />
-            <Button
-              aria-label="filter"
-              title="sory by self size"
-              onClick={() => toggleSortSizeMode()}
-              style={{ margin: 4 }}
-              icon={
-                sortSizeMode === "asc" ? (
-                  <BsSortUp />
-                ) : sortSizeMode === "desc" ? (
-                  <BsSortDown />
-                ) : (
-                  <BsSortDown />
-                )
-              }
-            />
           </div>
         </PopoverSurface>
       </Popover>
+
+      <Button
+        size="small"
+        title="sory by self size"
+        onClick={() => toggleSortSizeMode()}
+        style={{ marginLeft: 8, borderRadius: "100%" }}
+        icon={
+          sortSizeMode === "asc" ? (
+            <BsSortUp style={{ fontSize: 15 }} />
+          ) : sortSizeMode === "desc" ? (
+            <BsSortDown style={{ fontSize: 15 }} />
+          ) : (
+            <BsSortDown style={{ fontSize: 15 }} />
+          )
+        }
+      />
     </div>
   );
 });
