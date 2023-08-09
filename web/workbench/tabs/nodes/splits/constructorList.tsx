@@ -57,6 +57,7 @@ const FilterBar = observer(() => {
               placeholder=""
               id={inputId}
               autoFocus
+              value={csSrv.viewModel.filter.constructorName}
               onChange={(e) =>
                 setFilter("constructorName", e.target.value.trim())
               }
