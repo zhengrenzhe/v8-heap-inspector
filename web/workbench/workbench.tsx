@@ -56,22 +56,29 @@ const SideBar = observer(() => {
         </Tooltip>
       ))}
 
-      <Button
-        appearance="transparent"
-        icon={
-          wbService.model.theme === "light" ? <MdLightMode /> : <MdDarkMode />
-        }
-        onClick={() => {
-          wbService.model.setData(
-            "theme",
-            wbService.model.theme === "light" ? "dark" : "light",
-          );
-        }}
-        style={{
-          color: tokens.colorNeutralForegroundOnBrand,
-          marginTop: "auto",
-        }}
-      />
+      <Tooltip
+        key="toggle-theme"
+        content="toggle theme"
+        relationship="description"
+        positioning="after"
+      >
+        <Button
+          appearance="transparent"
+          icon={
+            wbService.model.theme === "light" ? <MdLightMode /> : <MdDarkMode />
+          }
+          onClick={() => {
+            wbService.model.setData(
+              "theme",
+              wbService.model.theme === "light" ? "dark" : "light",
+            );
+          }}
+          style={{
+            color: tokens.colorNeutralForegroundOnBrand,
+            marginTop: "auto",
+          }}
+        />
+      </Tooltip>
     </div>
   );
 });
