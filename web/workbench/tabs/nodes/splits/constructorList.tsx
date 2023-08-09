@@ -1,99 +1,34 @@
 import React from "react";
 import { observer } from "mobx-react";
-import {
-  BsSortAlphaDown,
-  BsFilter,
-  BsSortDown,
-  BsSortUp,
-} from "react-icons/bs";
 import { VscInspect } from "react-icons/vsc";
 import Highlighter from "react-highlight-words";
-import {
-  Button,
-  Input,
-  Label,
-  Popover,
-  PopoverSurface,
-  PopoverTrigger,
-  Spinner,
-  Text,
-  tokens,
-  useId,
-} from "@fluentui/react-components";
+import { Spinner, Text, tokens } from "@fluentui/react-components";
 
 import { Copy, useService } from "@/web/utils";
 import { ConstructorService } from "@/web/service";
 import { TableList } from "@/web/utils/";
 
-const FilterBar = observer(() => {
-  const csSrv = useService(ConstructorService);
-  const { sortSizeMode, toggleSortSizeMode, setFilter } = csSrv.viewModel;
-
-  const inputId = useId("input-with-placeholder");
-
-  return (
-    <div className="filter-actions" style={{ padding: "0 8px 4px" }}>
-      <Popover
-        positioning={{
-          position: "after",
-          align: "bottom",
-          offset: 10,
-        }}
-        size="small"
-      >
-        <PopoverTrigger disableButtonEnhancement>
-          <Button
-            size="small"
-            icon={<BsFilter style={{ fontSize: 15 }} />}
-            style={{ borderRadius: "100%" }}
-          />
-        </PopoverTrigger>
-
-        <PopoverSurface>
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            <Label htmlFor={inputId}>
-              <Text size={200}>Filter by constructor name</Text>
-            </Label>
-            <Input
-              placeholder=""
-              id={inputId}
-              autoFocus
-              value={csSrv.viewModel.filter.constructorName}
-              onChange={(e) =>
-                setFilter("constructorName", e.target.value.trim())
-              }
-            />
-          </div>
-        </PopoverSurface>
-      </Popover>
-
-      <Button
-        size="small"
-        title="sory by self size"
-        onClick={() => toggleSortSizeMode()}
-        style={{ marginLeft: 8, borderRadius: "100%" }}
-        icon={
-          sortSizeMode === "asc" ? (
-            <BsSortUp style={{ fontSize: 15 }} />
-          ) : sortSizeMode === "desc" ? (
-            <BsSortDown style={{ fontSize: 15 }} />
-          ) : (
-            <BsSortAlphaDown style={{ fontSize: 15 }} />
-          )
-        }
-      />
-    </div>
-  );
-});
+import { FilterBar } from "./filterBar";
 
 export const ConstructorList = observer(() => {
   const csSrv = useService(ConstructorService);
-  const constructors = csSrv.filtedConstructors;
+  const constructors = csSrv.filteredConstructors;
   const inited = csSrv.viewModel.inited;
 
   return (
     <div className="split-root">
-      <FilterBar />
+      <FilterBar
+        filter={{
+          constructorName: csSrv.viewModel.filter.constructorName,
+          onConstructorNameChanged: (value) =>
+            csSrv.viewModel.setFilter("constructorName", value),
+        }}
+        sort={{
+          sortMode: csSrv.viewModel.sortConstructorMode,
+          toggleSortMode: () =>
+            csSrv.viewModel.toggleSortConstructorMode("sortConstructorMode"),
+        }}
+      />
 
       {!inited ? (
         <Spinner

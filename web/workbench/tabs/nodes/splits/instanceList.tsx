@@ -6,6 +6,8 @@ import { useService } from "@/web/utils";
 import { ConstructorService } from "@/web/service";
 import { TableList } from "@/web/utils";
 
+import { FilterBar } from "./filterBar";
+
 export const InstanceList = observer(() => {
   const csSrv = useService(ConstructorService);
 
@@ -14,13 +16,21 @@ export const InstanceList = observer(() => {
   }
 
   if (csSrv.viewModel.instances.length === 0) {
-    return <span>No instances</span>;
+    return <Text>No instances</Text>;
   }
 
   return (
     <div className="split-root">
+      <FilterBar
+        sort={{
+          sortMode: csSrv.viewModel.sortInstanceMode,
+          toggleSortMode: () =>
+            csSrv.viewModel.toggleSortConstructorMode("sortInstanceMode"),
+        }}
+      />
+
       <TableList
-        data={csSrv.viewModel.instances}
+        data={csSrv.filtedInstances}
         column={[
           {
             columnTitle: "Name",

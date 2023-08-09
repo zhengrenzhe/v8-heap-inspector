@@ -44,7 +44,10 @@ class ViewModel {
   public inited = false;
 
   @observable
-  public sortSizeMode: "asc" | "desc" | undefined = undefined;
+  public sortConstructorMode: "asc" | "desc" | "alpha" = "alpha";
+
+  @observable
+  public sortInstanceMode: "asc" | "desc" | "alpha" = "alpha";
 
   @observable
   public filter = {
@@ -63,15 +66,17 @@ class ViewModel {
   };
 
   @action
-  public toggleSortSizeMode = () => {
-    if (this.sortSizeMode === undefined) {
-      return (this.sortSizeMode = "desc");
+  public toggleSortConstructorMode = (
+    key: "sortConstructorMode" | "sortInstanceMode",
+  ) => {
+    if (this[key] === "alpha") {
+      return (this[key] = "desc");
     }
-    if (this.sortSizeMode === "desc") {
-      return (this.sortSizeMode = "asc");
+    if (this[key] === "desc") {
+      return (this[key] = "asc");
     }
-    if (this.sortSizeMode === "asc") {
-      return (this.sortSizeMode = undefined);
+    if (this[key] === "asc") {
+      return (this[key] = "alpha");
     }
     return;
   };
@@ -92,7 +97,7 @@ export class ConstructorService {
   @inject(APIService)
   private apiService: APIService;
 
-  public get filtedConstructors() {
+  public get filteredConstructors() {
     return this.viewModel.constructors
       .filter((c) =>
         c.name
@@ -100,16 +105,30 @@ export class ConstructorService {
           .includes(this.viewModel.filter.constructorName.toLowerCase()),
       )
       .sort((a, b) => {
-        if (this.viewModel.sortSizeMode === "asc") {
+        if (this.viewModel.sortConstructorMode === "asc") {
           return a.selfSize - b.selfSize;
         }
 
-        if (this.viewModel.sortSizeMode === "desc") {
+        if (this.viewModel.sortConstructorMode === "desc") {
           return b.selfSize - a.selfSize;
         }
 
         return a.name.localeCompare(b.name);
       });
+  }
+
+  public get filtedInstances() {
+    return this.viewModel.instances.sort((a, b) => {
+      if (this.viewModel.sortInstanceMode === "asc") {
+        return a.selfSize - b.selfSize;
+      }
+
+      if (this.viewModel.sortInstanceMode === "desc") {
+        return b.selfSize - a.selfSize;
+      }
+
+      return a.name.localeCompare(b.name);
+    });
   }
 
   constructor() {
