@@ -1,6 +1,6 @@
 import React from "react";
 import { observer } from "mobx-react";
-import { Badge } from "@fluentui/react-components";
+import { Badge, Text } from "@fluentui/react-components";
 
 import { useService } from "@/web/utils";
 import { ConstructorService } from "@/web/service";
@@ -22,15 +22,31 @@ export const InstanceList = observer(() => {
       <TableList
         data={csSrv.viewModel.instances}
         column={[
-          { columnTitle: "Name", row: (item) => <span>{item.name}</span> },
-          { columnTitle: "ID", row: (item) => <span>{item.id}</span> },
+          {
+            columnTitle: "Name",
+            row: (item) => (
+              <Text font="monospace" size={200}>
+                {item.name}
+              </Text>
+            ),
+          },
+          {
+            columnTitle: "ID",
+            row: (item) => <Text size={200}>{item.id}</Text>,
+          },
           {
             columnTitle: "Type",
-            row: (item) => <Badge>{item.nodeType}</Badge>,
+            row: (item) => (
+              <Badge appearance="tint" size="small">
+                <Text font="monospace" size={200}>
+                  {item.nodeType}
+                </Text>
+              </Badge>
+            ),
           },
           {
             columnTitle: "Self Size",
-            row: (item) => <span>{item.selfSize}</span>,
+            row: (item) => <Text size={200}>{item.selfSize}</Text>,
           },
         ]}
         onRowClick={(item) => csSrv.getInitialNodeReference(item.nodeIdx)}

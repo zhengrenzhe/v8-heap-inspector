@@ -151,13 +151,13 @@ export const ConstructorList = observer(() => {
             },
             {
               columnTitle: "Count",
-              row: (item) => <span>{item.count}</span>,
+              row: (item) => <Text size={200}>{item.count}</Text>,
               rowTitle: (item) => item.count.toString(),
               width: 60,
             },
             {
               columnTitle: "Self Size",
-              row: (item) => <span>{item.selfSize}</span>,
+              row: (item) => <Text size={200}>{item.selfSize}</Text>,
               rowTitle: (item) => item.selfSize.toString(),
               width: 80,
             },
