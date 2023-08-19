@@ -1,6 +1,5 @@
 import React from "react";
 import { observer } from "mobx-react";
-import { VscInspect } from "react-icons/vsc";
 import Highlighter from "react-highlight-words";
 import { Spinner, Text, tokens } from "@fluentui/react-components";
 
@@ -76,10 +75,6 @@ export const ConstructorList = observer(() => {
                       />
                     </Text>
                     <Copy value={item.name} cls="list-table-td-name-copy" />
-                    <VscInspect
-                      onClick={() => csSrv.getInstances(item.name)}
-                      className="list-table-td-name-inspect"
-                    />
                   </>
                 );
               },
@@ -98,6 +93,7 @@ export const ConstructorList = observer(() => {
               width: 80,
             },
           ]}
+          onRowClick={(item) => csSrv.getInstances(item.name)}
         />
       ) : null}
     </div>
