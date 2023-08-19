@@ -25,7 +25,7 @@ impl NodeFullInfoReturnValue {
   ) -> NodeFullInfoReturnValue {
     let mut child_nodes_idx: Vec<i64> = vec![];
 
-    for to_node in n.get_to_nodes(s) {
+    for (to_node, _) in n.get_adjacent_nodes(s, AdjacentType::To, |_, _| true, |_, _| true) {
       child_nodes_idx.push(to_node.node_idx as i64);
     }
 
@@ -49,6 +49,10 @@ impl NodeFullInfoReturnValue {
   }
 }
 
+/// get node references
+/// * `s` SnapshotDeserialized
+/// * `node_idx` node index
+/// * `from_node_idx` from node index
 pub fn get_node_references(
   s: &SnapshotDeserialized,
   node_idx: i64,

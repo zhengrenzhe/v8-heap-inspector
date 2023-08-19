@@ -12,5 +12,6 @@
     "binding.*": true,
     "*.node": true,
     "*.lock": true
-  }
+  },
+  "rust-analyzer.linkedProjects": ["./Cargo.toml"]
 }

@@ -22,6 +22,9 @@ impl NodeAbstractInfoReturnValue {
   }
 }
 
+/// get nodes abstract info by constructor name
+/// * `s` SnapshotDeserialized
+/// * `constructor_name` constructor name
 pub fn get_nodes_abstract_info_by_constructor_name(
   s: &SnapshotDeserialized,
   constructor_name: &str,

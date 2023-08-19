@@ -15,6 +15,8 @@ pub struct GetAllConstructorsReturnValue {
   pub count: i64,
 }
 
+/// get all constructors
+/// * `s` SnapshotDeserialized
 pub fn get_all_constructors(s: &SnapshotDeserialized) -> GetAllConstructorsReturnValue {
   let mut constructors: HashMap<String, ConstructorItemDetailReturnValue> = HashMap::new();
 
