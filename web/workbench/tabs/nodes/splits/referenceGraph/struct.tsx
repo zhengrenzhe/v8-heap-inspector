@@ -3,11 +3,14 @@ import { observer } from "mobx-react";
 import Tree from "rc-tree";
 import { DataNode, EventDataNode } from "rc-tree/lib/interface";
 import "rc-tree/assets/index.css";
-import { Text } from "@fluentui/react-components";
+import { Text, tokens } from "@fluentui/react-components";
+import { VscChevronDown, VscChevronRight } from "react-icons/vsc";
 
 import { ConstructorService } from "@/web/service";
 import { filterNotNullable, getNodeIcon, useService } from "@/web/utils";
 import { NodeFullInfoReturnValue } from "@/binding";
+
+import "./struct.less";
 
 function convertTreeData(
   startNodeIdx: number,
@@ -45,6 +48,11 @@ function convertTreeData(
           .sort((a, b) => a.key.toString().localeCompare(b.key.toString()))
       : [],
     heapNodePayload: node,
+    style: {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "flex-start",
+    },
   } as DataNode;
 
   return currentNode;
@@ -83,8 +91,30 @@ export const Struct = observer(() => {
     <div className="split-root">
       <Tree
         treeData={[tree]}
-        height={300}
-        virtual={true}
+        selectable={false}
+        itemHeight={24}
+        switcherIcon={(p) => {
+          return (
+            <span
+              style={{
+                background: tokens.colorNeutralBackground1,
+                width: 16,
+                height: 16,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              {p.isLeaf ? null : p.expanded ? (
+                <VscChevronDown />
+              ) : (
+                <VscChevronRight />
+              )}
+            </span>
+          );
+        }}
+        rootClassName="struct-tree"
+        showLine
         loadData={loadData}
         expandedKeys={expandedKeys}
         onExpand={(keys) =>

@@ -125,16 +125,17 @@ export class ConstructorService {
   }
 
   public getInstances = async (constructorName: string) => {
-    const data = await this.apiService.getNodesAbstractInfoByConstructorName(
-      constructorName,
-    );
+    const data =
+      await this.apiService.getNodesAbstractInfoByConstructorName(
+        constructorName,
+      );
 
     this.viewModel.setData("instances", data);
     this.viewModel.setData("instancesReady", true);
   };
 
-  public loadNodeReference = async (nodeIdx: number) => {
-    const nodes = await this.apiService.getNodeReferences(nodeIdx);
+  public loadNodeReference = async (nodeIdx: number, fromNodeIdx?: number) => {
+    const nodes = await this.apiService.getNodeReferences(nodeIdx, fromNodeIdx);
     const map: Record<string, NodeFullInfoReturnValue> = {};
 
     nodes.forEach((n) => {

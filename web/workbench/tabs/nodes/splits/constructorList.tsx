@@ -74,7 +74,14 @@ export const ConstructorList = observer(() => {
                         }}
                       />
                     </Text>
-                    <Copy value={item.name} cls="list-table-td-name-copy" />
+                    <span
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }}
+                    >
+                      <Copy value={item.name} cls="list-table-td-name-copy" />
+                    </span>
                   </>
                 );
               },

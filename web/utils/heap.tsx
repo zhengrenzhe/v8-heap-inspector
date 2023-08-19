@@ -1,5 +1,10 @@
 import React from "react";
-import { VscJson, VscSymbolArray, VscSymbolString } from "react-icons/vsc";
+import {
+  VscSymbolArray,
+  VscSymbolClass,
+  VscSymbolString,
+  VscSymbolVariable,
+} from "react-icons/vsc";
 
 import { NodeFullInfoReturnValue } from "@/binding";
 
@@ -22,11 +27,13 @@ export function getNodeType(node: NodeFullInfoReturnValue) {
 export function getNodeIcon(node: NodeFullInfoReturnValue) {
   switch (getNodeType(node)) {
     case "object":
-      return <VscJson />;
+      return <VscSymbolClass />;
     case "array":
       return <VscSymbolArray />;
     case "string":
       return <VscSymbolString />;
+    case "object shape":
+      return <VscSymbolVariable />;
     default:
       return null;
   }
