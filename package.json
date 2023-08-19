@@ -21,7 +21,6 @@
   "license": "AGPL-3.0",
   "devDependencies": {
     "@napi-rs/cli": "^2.16.3",
-    "@parcel/transformer-less": "2.9.3",
     "@rollup/plugin-commonjs": "^25.0.4",
     "@rollup/plugin-json": "^6.0.0",
     "@rollup/plugin-typescript": "^11.1.2",
@@ -33,15 +32,15 @@
     "@types/react-copy-to-clipboard": "^5.0.4",
     "@types/react-dom": "^18.2.7",
     "@types/react-highlight-words": "^0.16.4",
-    "buffer": "^6.0.3",
     "less": "^4.2.0",
-    "parcel": "^2.9.3",
     "prettier": "^3.0.2",
     "process": "^0.11.10",
     "rimraf": "^5.0.1",
     "rollup": "^3.28.0",
     "rollup-plugin-copy": "^3.4.0",
-    "typescript": "^5.1.6"
+    "typescript": "^5.1.6",
+    "vite": "^4.4.9",
+    "vite-tsconfig-paths": "^4.2.0"
   },
   "engines": {
     "node": ">=18"
@@ -52,13 +51,13 @@
     "build": "napi build --platform --release --js binding.js --dts binding.d.ts",
     "build:cli": "npm run build && rollup -c rollup.config.js",
     "build:cli-debug": "npm run build-debug && rollup -c rollup.config.js",
-    "clean": "rimraf -g binding.js binding.d.ts v8*.node cli-output target .parcel-cache",
+    "clean": "rimraf -g binding.js binding.d.ts v8*.node cli-output target",
     "build:debug": "napi build --platform --js binding.js --dts binding.d.ts",
     "prepublishOnly": "npm run build:ts && napi prepublish -t npm",
     "test": "echo 'hello'",
     "universal": "napi universal",
     "version": "napi version",
-    "dev:web": "parcel serve ./web/index.html --port 9000 --open"
+    "dev:web": "vite dev ./web --port 9000 --open -c ./vite.config.ts"
   },
   "packageManager": "yarn@3.6.1",
   "dependencies": {
