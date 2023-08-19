@@ -1,0 +1,45 @@
+.struct-tree,
+.struct-tree .rc-tree-list,
+.struct-tree .rc-tree-list .rc-tree-list-holder,
+.struct-tree .rc-tree-list .rc-tree-list-holder > div {
+  height: 100%;
+  overflow: clip;
+}
+
+.struct-tree
+  .rc-tree-list
+  .rc-tree-list-holder
+  > div
+  > .rc-tree-list-holder-inner {
+  height: 100%;
+  overflow: auto;
+}
+
+.struct-tree .rc-tree-treenode {
+  height: 24px;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 24px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.struct-tree .switcher-icon {
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.struct-tree .rc-tree-node-content-wrapper {
+  display: flex !important;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.struct-tree .rc-tree-iconEle {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}

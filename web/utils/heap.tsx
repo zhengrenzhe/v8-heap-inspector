@@ -8,20 +8,31 @@ import {
 
 import { NodeFullInfoReturnValue } from "@/binding";
 
-export function getNodeType(node: NodeFullInfoReturnValue) {
+type NODE_TYPE =
+  | "hidden"
+  | "array"
+  | "string"
+  | "object"
+  | "code"
+  | "closure"
+  | "regexp"
+  | "number"
+  | "native"
+  | "synthetic"
+  | "concatenated string"
+  | "sliced string"
+  | "symbol"
+  | "bigint"
+  | "object shape";
+
+export function getNodeType(node: NodeFullInfoReturnValue): NODE_TYPE {
   if (node.info.nodeType === "object") {
     if (node.info.name === "Array") {
       return "array";
     }
     return "object";
   }
-  if (node.info.nodeType === "string") {
-    return "string";
-  }
-  if (node.info.nodeType === "object shape") {
-    return "object shape";
-  }
-  return "unknown";
+  return node.info.nodeType as NODE_TYPE;
 }
 
 export function getNodeIcon(node: NodeFullInfoReturnValue) {
