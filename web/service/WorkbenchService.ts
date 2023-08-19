@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 
 import { injectable } from "@/web/utils";
 
@@ -10,7 +10,9 @@ class WorkbenchModel {
       const config = localStorage.getItem("v8-heap-inspector-workbench-config");
       if (config) {
         const obj = JSON.parse(config);
-        Object.assign(this, obj);
+        runInAction(() => {
+          Object.assign(this, obj);
+        });
       }
     } catch (e) {}
   }

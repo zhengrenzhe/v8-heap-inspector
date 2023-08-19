@@ -56,7 +56,11 @@ impl LocalAnalyzer {
   }
 
   #[napi]
-  pub fn get_node_references(&self, path_idx: Vec<i64>) -> NodeFullInfoReturnValue {
-    get_node_references(&self.snapshot, path_idx)
+  pub fn get_node_references(
+    &self,
+    node_idx: i64,
+    from_node_idx: Option<i64>,
+  ) -> Vec<NodeFullInfoReturnValue> {
+    get_node_references(&self.snapshot, node_idx, from_node_idx)
   }
 }

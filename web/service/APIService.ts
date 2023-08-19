@@ -33,11 +33,12 @@ export class APIService {
     );
   };
 
-  public getNodeReferences = async (pathIdx: number[] = []) => {
-    return this.sendReq<NodeFullInfoReturnValue>(
+  public getNodeReferences = async (nodeIdx: number, fromNodeIdx?: number) => {
+    return this.sendReq<NodeFullInfoReturnValue[]>(
       "http://localhost:3000/api/get_node_references",
       {
-        pathIdx,
+        nodeIdx,
+        fromNodeIdx,
       },
     );
   };

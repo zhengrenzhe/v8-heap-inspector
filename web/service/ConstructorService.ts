@@ -1,4 +1,5 @@
 import { action, makeObservable, observable } from "mobx";
+import { merge } from "lodash";
 
 import { inject, injectable } from "@/web/utils";
 import {
@@ -6,25 +7,7 @@ import {
   NodeAbstractInfoReturnValue,
   NodeFullInfoReturnValue,
 } from "@/binding";
-
-import { APIService } from "./APIService";
-import { omit } from "lodash";
-
-const updateTreeData = (
-  tree: NodeFullInfoReturnValue,
-  pathIdx: number[],
-  newData: NodeFullInfoReturnValue,
-): NodeFullInfoReturnValue => {
-  let node = tree;
-
-  for (let i = 0; i < pathIdx.length; i++) {
-    const path = pathIdx[i]!;
-    node = node.children.find((c) => c.info.nodeIdx === path)!;
-  }
-  Object.assign(node, omit(newData, ["fromEdgeName", "fromEdgeType"]));
-
-  return Object.assign({}, tree);
-};
+import { APIService } from "@/web/service";
 
 class ViewModel {
   constructor() {
@@ -55,10 +38,13 @@ class ViewModel {
   };
 
   @observable.ref
-  public nodeReferences: NodeFullInfoReturnValue | null = null;
+  public nodeTreeMap: Record<string, NodeFullInfoReturnValue> = {};
 
   @observable
-  public startNodeIdx = 0;
+  public startNodeIdx = -1;
+
+  @observable
+  public expandedKeys: string[] = [];
 
   @action
   public setData = <K extends keyof this>(k: K, v: this[K]) => {
@@ -147,21 +133,20 @@ export class ConstructorService {
     this.viewModel.setData("instancesReady", true);
   };
 
-  public getInitialNodeReference = async (nodeIdx: number) => {
-    const startNode = await this.apiService.getNodeReferences([nodeIdx]);
-    this.viewModel.setData("nodeReferences", startNode);
-  };
+  public loadNodeReference = async (nodeIdx: number) => {
+    const nodes = await this.apiService.getNodeReferences(nodeIdx);
+    const map: Record<string, NodeFullInfoReturnValue> = {};
 
-  public loadNodeReference = async (pathIdx: number[]) => {
-    if (!this.viewModel.nodeReferences) {
-      return;
-    }
-    const data = await this.apiService.getNodeReferences(pathIdx);
-    const rs = updateTreeData(
-      this.viewModel.nodeReferences,
-      pathIdx.slice(1),
-      data,
+    nodes.forEach((n) => {
+      map[n.info.nodeIdx] = merge(
+        this.viewModel.nodeTreeMap[n.info.nodeIdx],
+        n,
+      );
+    });
+
+    this.viewModel.setData(
+      "nodeTreeMap",
+      Object.assign({}, this.viewModel.nodeTreeMap, map),
     );
-    this.viewModel.setData("nodeReferences", rs);
   };
 }

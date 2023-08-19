@@ -1,77 +1,68 @@
 import React, { useCallback } from "react";
 import { observer } from "mobx-react";
 import Tree from "rc-tree";
-import { VscJson, VscSymbolArray, VscSymbolString } from "react-icons/vsc";
 import { DataNode, EventDataNode } from "rc-tree/lib/interface";
 import "rc-tree/assets/index.css";
 import { Text } from "@fluentui/react-components";
 
 import { ConstructorService } from "@/web/service";
-import { useService } from "@/web/utils";
+import { filterNotNullable, getNodeIcon, useService } from "@/web/utils";
 import { NodeFullInfoReturnValue } from "@/binding";
 
-function getType(node: NodeFullInfoReturnValue) {
-  if (node.info.nodeType === "object") {
-    if (node.info.name === "Array") {
-      return "array";
-    }
-    return "object";
-  }
-  if (node.info.nodeType === "string") {
-    return "string";
-  }
-  if (node.info.nodeType === "object shape") {
-    return "object shape";
-  }
-  return "unknown";
-}
-
-function getNodeIcon(node: NodeFullInfoReturnValue) {
-  switch (getType(node)) {
-    case "object":
-      return <VscJson />;
-    case "array":
-      return <VscSymbolArray />;
-    case "string":
-      return <VscSymbolString />;
-    default:
-      return null;
-  }
-}
-
 function convertTreeData(
-  start: NodeFullInfoReturnValue,
-  pathIdx: number[],
-): DataNode {
-  const path = pathIdx.concat(start.info.nodeIdx);
+  startNodeIdx: number,
+  nodeTreeMap: Record<number, NodeFullInfoReturnValue>,
+  fromNodeIdx: string,
+  expandedKeys: string[],
+): DataNode | null {
+  const node = nodeTreeMap[startNodeIdx]!;
+  if (!node) {
+    return null;
+  }
+
+  const key = `${fromNodeIdx}-${node.info.id}`;
+
   const currentNode: DataNode = {
     title: (
-      <span>{`${start.fromEdgeName} :: ${start.info.name} @${start.info.id}`}</span>
+      <Text font="monospace" size={200}>
+        {[
+          node.fromEdges?.map((e) => e.edgeName).join("::"),
+          `${node.info.name} @${node.info.id}`,
+        ]
+          .filter(filterNotNullable)
+          .join(" :: ")}
+      </Text>
     ),
-    icon: getNodeIcon(start),
-    key: path.join("-"),
-    children: start.children.map((toNode) => convertTreeData(toNode, path)),
-  };
+    icon: getNodeIcon(node),
+    key,
+    isLeaf: !node.hasChildren,
+    children: expandedKeys.includes(key)
+      ? node.childNodesIdx
+          .map((toNodeIdx) =>
+            convertTreeData(toNodeIdx, nodeTreeMap, key, expandedKeys),
+          )
+          .filter(filterNotNullable)
+          .sort((a, b) => a.key.toString().localeCompare(b.key.toString()))
+      : [],
+    heapNodePayload: node,
+  } as DataNode;
 
   return currentNode;
 }
 
 export const Struct = observer(() => {
   const csSrv = useService(ConstructorService);
-  const nodeReferences = csSrv.viewModel.nodeReferences;
+  const { startNodeIdx, nodeTreeMap, expandedKeys } = csSrv.viewModel;
 
   const loadData = useCallback((treeNode: EventDataNode<DataNode>) => {
     return new Promise<void>(async (r) => {
-      const path = treeNode.key
-        .toString()
-        .split("-")
-        .map((x) => parseInt(x));
-      await csSrv.loadNodeReference(path);
+      const node = (treeNode as any).heapNodePayload as NodeFullInfoReturnValue;
+      await csSrv.loadNodeReference(node.info.nodeIdx);
       r();
     });
   }, []);
 
-  if (!nodeReferences) {
+  if (!nodeTreeMap[startNodeIdx]) {
     return (
       <Text align="center" style={{ margin: "auto" }}>
         No instance selected
@@ -79,13 +70,26 @@ export const Struct = observer(() => {
     );
   }
 
+  const tree = convertTreeData(startNodeIdx, nodeTreeMap, "root", expandedKeys);
+  if (!tree) {
+    return (
+      <Text align="center" style={{ margin: "auto" }}>
+        convertTreeData failed
+      </Text>
+    );
+  }
+
   return (
     <div className="split-root">
       <Tree
-        treeData={[convertTreeData(nodeReferences, [])]}
+        treeData={[tree]}
         height={300}
         virtual={true}
         loadData={loadData}
+        expandedKeys={expandedKeys}
+        onExpand={(keys) =>
+          csSrv.viewModel.setData("expandedKeys", keys as string[])
+        }
       />
     </div>
   );

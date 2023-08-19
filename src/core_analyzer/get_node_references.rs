@@ -1,47 +1,49 @@
-use crate::core::{SnapshotDeserialized, SnapshotEdge, SnapshotNode};
+use crate::core::{AdjacentType, SnapshotDeserialized, SnapshotEdge, SnapshotNode};
 
 use super::NodeAbstractInfoReturnValue;
+
+#[napi(object)]
+
+pub struct LiteFromEdgeInfoReturnValue {
+  pub edge_type: String,
+  pub edge_name: String,
+}
 
 #[napi(object)]
 pub struct NodeFullInfoReturnValue {
   pub info: NodeAbstractInfoReturnValue,
   pub has_children: bool,
-  pub children: Vec<NodeFullInfoReturnValue>,
-  pub from_edge_type: String,
-  pub from_edge_name: String,
+  pub child_nodes_idx: Vec<i64>,
+  pub from_edges: Option<Vec<LiteFromEdgeInfoReturnValue>>,
 }
 
 impl NodeFullInfoReturnValue {
   pub fn new(
     n: &SnapshotNode,
     s: &SnapshotDeserialized,
-    with_children: bool,
-    from_edge: Option<&SnapshotEdge>,
+    from_edges: Option<Vec<&SnapshotEdge>>,
   ) -> NodeFullInfoReturnValue {
-    let mut children: Vec<NodeFullInfoReturnValue> = vec![];
+    let mut child_nodes_idx: Vec<i64> = vec![];
 
-    if with_children {
-      for to_edge in n.get_to_edges(s) {
-        match s.nodes.get(to_edge.to_node_index as usize) {
-          Some(child) => {
-            children.push(NodeFullInfoReturnValue::new(child, s, false, Some(to_edge)));
-          }
-          None => {}
-        }
-      }
+    for to_node in n.get_to_nodes(s) {
+      child_nodes_idx.push(to_node.node_idx as i64);
     }
 
     return NodeFullInfoReturnValue {
       info: NodeAbstractInfoReturnValue::new(n, s),
-      has_children: n.to_edge_index.is_empty(),
-      children,
-      from_edge_type: match from_edge {
-        Some(edge) => edge.get_edge_type().to_string(),
-        None => "".to_string(),
-      },
-      from_edge_name: match from_edge {
-        Some(edge) => edge.get_edge_name(s),
-        None => "".to_string(),
+      has_children: !n.to_edge_index.is_empty(),
+      child_nodes_idx,
+      from_edges: match from_edges {
+        Some(from_edges) => Some(
+          from_edges
+            .iter()
+            .map(|edge| LiteFromEdgeInfoReturnValue {
+              edge_type: edge.get_edge_type().to_string(),
+              edge_name: edge.get_edge_name(s),
+            })
+            .collect(),
+        ),
+        None => None,
       },
     };
   }
@@ -49,41 +51,38 @@ impl NodeFullInfoReturnValue {
 
 pub fn get_node_references(
   s: &SnapshotDeserialized,
-  path_idx: Vec<i64>,
-) -> NodeFullInfoReturnValue {
-  if path_idx.is_empty() {
-    panic!("path_idx is empty")
-  }
-
-  let mut path_idx = path_idx;
-  let mut node = match s.nodes.get(path_idx.remove(0) as usize) {
+  node_idx: i64,
+  from_node_idx: Option<i64>,
+) -> Vec<NodeFullInfoReturnValue> {
+  let node = match s.nodes.get(node_idx as usize) {
     Some(node) => node,
-    None => panic!("not found node when start"),
+    None => panic!("not found node by idx: {}", node_idx),
   };
 
-  loop {
-    if path_idx.is_empty() {
-      return NodeFullInfoReturnValue::new(node, s, true, None);
-    }
+  let from_edges = match from_node_idx {
+    Some(from_node_idx) => Some(
+      node
+        .get_adjacent_edges(s, AdjacentType::From, |e, _| {
+          e.from_node_index == from_node_idx as u64
+        })
+        .iter()
+        .map(|s| *s)
+        .collect::<Vec<&SnapshotEdge>>(),
+    ),
+    None => None,
+  };
 
-    let next_index = path_idx.remove(0) as u64;
-    let to_edges = node.get_to_edges(s);
+  let mut result = vec![NodeFullInfoReturnValue::new(node, s, from_edges)];
 
-    match to_edges.iter().find(|&x| x.to_node_index == next_index) {
-      Some(to_edge) => match s.nodes.get(to_edge.to_node_index as usize) {
-        Some(next_node) => {
-          node = next_node;
-        }
-        None => {
-          panic!(
-            "not found to_node_index {} in edge: {:?}",
-            to_edge.to_node_index, to_edge
-          );
-        }
-      },
-      None => {
-        panic!("not found next_index {next_index} in node: {:?}", node)
-      }
-    }
+  for (to_node, to_node_from_edges) in
+    node.get_adjacent_nodes(s, AdjacentType::To, |_, _| true, |_, _| true)
+  {
+    result.push(NodeFullInfoReturnValue::new(
+      to_node,
+      s,
+      Some(to_node_from_edges),
+    ));
   }
+
+  return result;
 }

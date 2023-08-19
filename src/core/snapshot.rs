@@ -1,13 +1,23 @@
+use std::collections::{HashMap, HashSet};
+
 use super::{
   EDGE_TYPES, NODE_TYPES, NODE_TYPE_CODE, NODE_TYPE_HIDDEN, NODE_TYPE_NATIVE, NODE_TYPE_OBJECT,
 };
 use petgraph::graph::NodeIndex;
 use petgraph::{Directed, Graph};
 
+#[derive(Clone, Copy)]
+pub enum AdjacentType {
+  From,
+  To,
+}
+
+pub type SnapshotNodeIdx = u64;
+
 #[derive(Debug)]
 pub struct SnapshotNode {
   /// node index in the snapshot.nodes fields
-  pub node_idx: u64,
+  pub node_idx: SnapshotNodeIdx,
   /// node type index
   pub node_type_index: usize,
   /// node index field
@@ -67,12 +77,89 @@ impl SnapshotNode {
 
     edges
   }
+
+  /// get adjacent edges
+  /// * `s` SnapshotDeserialized
+  /// * `adjacent_type` what adjacent type of edges to get. from, to or all
+  /// * `filter` filter result
+  pub fn get_adjacent_edges<'a>(
+    &self,
+    s: &'a SnapshotDeserialized,
+    adjacent_type: AdjacentType,
+    filter: impl Fn(&'a SnapshotEdge, &AdjacentType) -> bool,
+  ) -> Vec<&'a SnapshotEdge> {
+    let mapper_filter = |edge_idx| {
+      let edge = s.edges.get(edge_idx as usize).unwrap();
+      match filter(edge, &adjacent_type) {
+        true => Some(edge),
+        false => None,
+      }
+    };
+
+    match adjacent_type {
+      AdjacentType::From => {
+        convert_items_with_adjacent(self.from_edge_index.to_owned(), mapper_filter)
+      }
+      AdjacentType::To => convert_items_with_adjacent(self.to_edge_index.to_owned(), mapper_filter),
+    }
+  }
+
+  pub fn get_adjacent_nodes<'a>(
+    &self,
+    s: &'a SnapshotDeserialized,
+    adjacent_type: AdjacentType,
+    filter_edge: impl Fn(&'a SnapshotEdge, &AdjacentType) -> bool,
+    filter_node: impl Fn(&'a SnapshotNode, &AdjacentType) -> bool,
+  ) -> Vec<(&'a SnapshotNode, Vec<&'a SnapshotEdge>)> {
+    let adjacent_edges = self
+      .get_adjacent_edges(s, adjacent_type, filter_edge)
+      .into_iter();
+
+    let mut node_map: HashMap<SnapshotNodeIdx, HashSet<SnapshotEdgeIdx>> = HashMap::new();
+
+    for edge in adjacent_edges {
+      for ref_node in edge.get_adjacent_nodes(s, adjacent_type, &filter_node) {
+        if !node_map.contains_key(&ref_node.node_idx) {
+          node_map.insert(ref_node.node_idx, HashSet::from([edge.edge_index]));
+        } else {
+          node_map
+            .get_mut(&ref_node.node_idx)
+            .unwrap()
+            .insert(edge.edge_index);
+        }
+      }
+    }
+
+    node_map
+      .iter()
+      .map(|(node_idx, edge_idxs)| {
+        (
+          s.nodes.get(*node_idx as usize).unwrap(),
+          edge_idxs
+            .iter()
+            .map(|edge_idx| s.edges.get(*edge_idx as usize).unwrap())
+            .collect::<Vec<&SnapshotEdge>>(),
+        )
+      })
+      .collect()
+  }
+
+  pub fn get_to_nodes<'a>(&self, s: &'a SnapshotDeserialized) -> Vec<&'a SnapshotNode> {
+    let to_edges = self.get_to_edges(s);
+
+    to_edges
+      .into_iter()
+      .filter_map(|edge| s.nodes.get(edge.to_node_index as usize))
+      .collect::<Vec<&SnapshotNode>>()
+  }
 }
+
+pub type SnapshotEdgeIdx = u64;
 
 #[derive(Debug)]
 pub struct SnapshotEdge {
   /// edge index in the snapshot.edges fields
-  pub edge_index: u64,
+  pub edge_index: SnapshotEdgeIdx,
   /// edge type index
   pub edge_type_index: usize,
   /// edge name or index raw value
@@ -95,6 +182,26 @@ impl SnapshotEdge {
   pub fn get_edge_name<'a>(&self, s: &'a SnapshotDeserialized) -> String {
     s.strings[self.name_or_index_raw as usize].clone()
   }
+
+  pub fn get_adjacent_nodes<'a>(
+    &self,
+    s: &'a SnapshotDeserialized,
+    adjacent_type: AdjacentType,
+    filter_node: impl Fn(&'a SnapshotNode, &AdjacentType) -> bool,
+  ) -> Vec<&'a SnapshotNode> {
+    let mapper_filter = |node_idx| {
+      let node = s.nodes.get(node_idx as usize).unwrap();
+      match filter_node(node, &adjacent_type) {
+        true => Some(node),
+        false => None,
+      }
+    };
+
+    match adjacent_type {
+      AdjacentType::From => convert_items_with_adjacent(vec![self.from_node_index], mapper_filter),
+      AdjacentType::To => convert_items_with_adjacent(vec![self.to_node_index], mapper_filter),
+    }
+  }
 }
 
 pub struct SnapshotDeserialized {
@@ -102,4 +209,11 @@ pub struct SnapshotDeserialized {
   pub edges: Vec<SnapshotEdge>,
   pub strings: Vec<String>,
   pub graph: Graph<usize, usize, Directed>,
+}
+
+fn convert_items_with_adjacent<'a, T, S>(
+  items: Vec<T>,
+  mapper_filter: impl Fn(T) -> Option<&'a S>,
+) -> Vec<&'a S> {
+  items.into_iter().filter_map(mapper_filter).collect()
 }

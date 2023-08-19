@@ -1,5 +1,6 @@
 import { Allotment } from "allotment";
 import React from "react";
+
 import { Struct } from "./struct";
 
 export const ReferenceGraph = () => {
@@ -11,7 +12,9 @@ export const ReferenceGraph = () => {
             <Struct />
           </div>
         </Allotment.Pane>
-        <Allotment.Pane key="graph">B</Allotment.Pane>
+        <Allotment.Pane key="graph">
+          <div className="nodes-pane">B</div>
+        </Allotment.Pane>
       </Allotment>
     </div>
   );

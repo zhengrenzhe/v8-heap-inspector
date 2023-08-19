@@ -75,7 +75,10 @@ export const InstanceList = observer(() => {
             row: (item) => <Text size={200}>{item.selfSize}</Text>,
           },
         ]}
-        onRowClick={(item) => csSrv.getInitialNodeReference(item.nodeIdx)}
+        onRowClick={(item) => {
+          csSrv.viewModel.setData("startNodeIdx", item.nodeIdx);
+          csSrv.loadNodeReference(item.nodeIdx);
+        }}
       />
     </div>
   );
