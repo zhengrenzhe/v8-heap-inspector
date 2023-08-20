@@ -1,6 +1,7 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, ReactNode } from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { AiOutlineCopy, AiOutlineCheck } from "react-icons/ai";
+import { filterNotNullable } from "./common";
 
 export function Copy(props: { value: string; cls: string }) {
   const [copied, setCopied] = useState(false);
@@ -22,4 +23,13 @@ export function Copy(props: { value: string; cls: string }) {
       </span>
     </CopyToClipboard>
   );
+}
+
+export function joinElements(t: ReactNode[], split: ReactNode) {
+  return t
+    .filter(filterNotNullable)
+    .reduce<ReactNode[]>(
+      (acc, cur) => (acc.length === 0 ? [cur] : [acc, split, cur]),
+      [],
+    );
 }

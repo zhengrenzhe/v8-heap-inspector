@@ -1,10 +1,14 @@
 import React from "react";
 import {
   VscSymbolArray,
-  VscSymbolClass,
+  VscSymbolConstant,
+  VscSymbolNamespace,
+  VscSymbolNumeric,
   VscSymbolString,
   VscSymbolVariable,
 } from "react-icons/vsc";
+import { PiFunction } from "react-icons/pi";
+import { BsRegex } from "react-icons/bs";
 
 import { NodeFullInfoReturnValue } from "@/binding";
 
@@ -38,14 +42,22 @@ export function getNodeType(node: NodeFullInfoReturnValue): NODE_TYPE {
 export function getNodeIcon(node: NodeFullInfoReturnValue) {
   switch (getNodeType(node)) {
     case "object":
-      return <VscSymbolClass />;
+      return <VscSymbolNamespace />;
     case "array":
       return <VscSymbolArray />;
     case "string":
       return <VscSymbolString />;
     case "object shape":
       return <VscSymbolVariable />;
+    case "number":
+    case "bigint":
+      return <VscSymbolNumeric />;
+    case "regexp":
+      return <BsRegex />;
+    case "closure":
+    case "code":
+      return <PiFunction />;
     default:
-      return null;
+      return <VscSymbolConstant />;
   }
 }

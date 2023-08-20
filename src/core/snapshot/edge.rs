@@ -1,4 +1,4 @@
-use crate::core::EDGE_TYPES;
+use crate::core::{EDGE_TYPES, EDGE_TYPE_ELEMENT, EDGE_TYPE_HIDDEN};
 
 use super::{filter_map, AdjacentType, SnapshotDeserialized, SnapshotNode};
 
@@ -31,6 +31,12 @@ impl SnapshotEdge {
   /// get edge name
   /// * `s` SnapshotDeserialized
   pub fn get_edge_name<'a>(&self, s: &'a SnapshotDeserialized) -> String {
+    let edge_type = self.get_edge_type();
+
+    if edge_type == EDGE_TYPE_HIDDEN || edge_type == EDGE_TYPE_ELEMENT {
+      return self.name_or_index_raw.to_string();
+    }
+
     s.strings[self.name_or_index_raw as usize].clone()
   }
 
