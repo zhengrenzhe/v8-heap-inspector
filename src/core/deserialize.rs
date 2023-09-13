@@ -4,7 +4,7 @@ use super::{
 use petgraph::visit::NodeRef;
 use petgraph::Graph;
 
-/// deserialize snapshot file
+/// 反序列化对内存快照
 /// * `slice` bytes of snapshot file
 pub fn deserialize(slice: &[u8]) -> SnapshotDeserialized {
   let raw: SnapshotFileRaw = serde_json::from_slice(slice).unwrap();
