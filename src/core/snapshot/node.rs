@@ -8,68 +8,77 @@ use crate::core::{
 
 use super::{filter_map, AdjacentType, SnapshotDeserialized, SnapshotEdge, SnapshotEdgeIdx};
 
+/// 节点索引类型
 pub type SnapshotNodeIdx = u64;
 
+/// 节点
 #[derive(Debug)]
 pub struct SnapshotNode {
-  /// node index in the snapshot.nodes fields
+  /// 节点在快照 nodes 字段中的索引
   pub node_idx: SnapshotNodeIdx,
-  /// node type index
+  /// 节点类型索引
   pub node_type_index: usize,
-  /// node index field
+  /// 节点名称索引
   pub name_index: usize,
-  /// unique node id in v8 snapshot
+  /// 节点在 v8 堆内存快照中的唯一 ID
   pub id: u64,
-  /// node self size
+  /// 节点自身尺寸
   pub self_size: u64,
-  /// node edge count
+  /// 节点边的数量
   pub edge_count: u64,
+  /// trace_node_id
   pub trace_node_id: u64,
+  /// detachedness
   pub detachedness: u64,
-  /// from edge index list
+  /// 来源边索引
   pub from_edge_index: Vec<u64>,
-  /// to edge index list
+  /// 目标边索引
   pub to_edge_index: Vec<u64>,
-  /// graph node index
+  /// 节点在图中对应的节点
   pub graph_node: NodeIndex,
 }
 
 impl SnapshotNode {
-  /// get node type
+  /// 获取节点类型
   pub fn get_node_type(&self) -> &str {
     NODE_TYPES[self.node_type_index]
   }
 
-  /// get node class name
-  /// * `s` SnapshotDeserialized
+  /// 获取节点类名
+  /// * `s` 反序列化后的堆内存快照
   pub fn get_node_cls_name(&self, s: &SnapshotDeserialized) -> String {
+    // 拿到节点类型
     let node_type = self.get_node_type();
 
+    // hidden 类型统一给 (system)，此逻辑同 chrome devtools
     if node_type == NODE_TYPE_HIDDEN {
       return "(system)".to_string();
     }
 
+    // native 或 object 类型用节点名
     if node_type == NODE_TYPE_NATIVE || node_type == NODE_TYPE_OBJECT {
       return self.get_name(s).to_string();
     }
 
+    // code 类型统一给 (compiled code)，此逻辑同 chrome devtools
     if node_type == NODE_TYPE_CODE {
       return "(compiled code)".to_string();
     }
 
+    // 其余默认使用节点类型，此逻辑同 chrome devtools
     vec!["(", node_type, ")"].join("")
   }
 
-  /// get node name
-  /// * `s` SnapshotDeserialized
+  /// 获取节点名
+  /// * `s` 反序列化后的堆内存快照
   pub fn get_name(&self, s: &SnapshotDeserialized) -> String {
     s.strings[self.name_index].clone()
   }
 
-  /// get adjacent edges
-  /// * `s` SnapshotDeserialized
-  /// * `adjacent_type` what adjacent type of edges to get. from or to
-  /// * `filter` filter result
+  /// 获取节点连接的边
+  /// * `s` 反序列化后的堆内存快照
+  /// * `adjacent_type` 连接方向
+  /// * `filter` 过滤函数
   pub fn get_adjacent_edges<'a>(
     &self,
     s: &'a SnapshotDeserialized,
@@ -90,11 +99,11 @@ impl SnapshotNode {
     }
   }
 
-  /// get adjacent nodes
-  /// * `s` SnapshotDeserialized
-  /// * `adjacent_type` what adjacent type of edges to get. from or to
-  /// * `filter_edge` filter edge result
-  /// * `filter_node` filter node result
+  /// 获取节点连接的节点
+  /// * `s` 反序列化后的堆内存快照
+  /// * `adjacent_type` 连接方向
+  /// * `filter_edge` 边过滤函数
+  /// * `filter_node` 节点过滤函数
   pub fn get_adjacent_nodes<'a>(
     &self,
     s: &'a SnapshotDeserialized,

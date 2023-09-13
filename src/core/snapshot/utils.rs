@@ -1,4 +1,4 @@
-/// filter map
+/// filter map 二合一
 /// * `items` items to filter
 /// * `mapper_filter` mapper filter, return Option
 pub fn filter_map<'a, T, S>(
