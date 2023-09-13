@@ -51,7 +51,7 @@
     "build": "napi build --platform --release --js binding.js --dts binding.d.ts",
     "build:cli": "npm run build && rollup -c rollup.config.js",
     "build:cli-debug": "npm run build-debug && rollup -c rollup.config.js",
-    "clean": "rimraf -g binding.js binding.d.ts v8*.node cli-output target",
+    "clean": "rimraf -g binding.js binding.d.ts v8*.node cli-output target dist",
     "build:debug": "napi build --platform --js binding.js --dts binding.d.ts",
     "prepublishOnly": "npm run build:ts && napi prepublish -t npm",
     "test": "echo 'hello'",
