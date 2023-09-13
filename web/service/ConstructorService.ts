@@ -1,5 +1,4 @@
 import { action, makeObservable, observable } from "mobx";
-import { merge } from "lodash";
 
 import { inject, injectable } from "@/web/utils";
 import {
@@ -38,7 +37,7 @@ class ViewModel {
   };
 
   @observable.ref
-  public nodeTreeMap: Record<string, NodeFullInfoReturnValue> = {};
+  public nodeTreeMap: Record<number, NodeFullInfoReturnValue> = {};
 
   @observable
   public startNodeIdx = -1;
@@ -135,19 +134,19 @@ export class ConstructorService {
   };
 
   public loadNodeReference = async (nodeIdx: number, fromNodeIdx?: number) => {
-    const nodes = await this.apiService.getNodeReferences(nodeIdx, fromNodeIdx);
-    const map: Record<string, NodeFullInfoReturnValue> = {};
+    if (this.viewModel.nodeTreeMap[nodeIdx]) {
+      return;
+    }
 
-    nodes.forEach((n) => {
-      map[n.info.nodeIdx] = merge(
-        this.viewModel.nodeTreeMap[n.info.nodeIdx],
-        n,
-      );
-    });
+    const node = await this.apiService.getNodeReferences(nodeIdx, fromNodeIdx);
 
     this.viewModel.setData(
       "nodeTreeMap",
-      Object.assign({}, this.viewModel.nodeTreeMap, map),
+      Object.assign({}, this.viewModel.nodeTreeMap, {
+        [node.info.nodeIdx]: node,
+      }),
     );
+
+    console.log(this.viewModel.nodeTreeMap);
   };
 }

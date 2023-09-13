@@ -20,7 +20,9 @@ export const Struct = observer(() => {
   const loadData = useCallback((treeNode: EventDataNode<DataNode>) => {
     return new Promise<void>(async (r) => {
       const node = (treeNode as any).heapNodePayload as NodeFullInfoReturnValue;
-      await csSrv.loadNodeReference(node.info.nodeIdx);
+      const fromNode = (treeNode as any)
+        .fromHeapNodePayload as NodeFullInfoReturnValue;
+      await csSrv.loadNodeReference(node.info.nodeIdx, fromNode?.info.nodeIdx);
       r();
     });
   }, []);
@@ -33,7 +35,12 @@ export const Struct = observer(() => {
     );
   }
 
-  const tree = convertTreeData(startNodeIdx, nodeTreeMap, "root", expandedKeys);
+  const tree = convertTreeData(
+    nodeTreeMap[startNodeIdx]!,
+    nodeTreeMap,
+    "root",
+    expandedKeys,
+  );
   if (!tree) {
     return (
       <Text align="center" style={{ margin: "auto" }}>
@@ -41,8 +48,6 @@ export const Struct = observer(() => {
       </Text>
     );
   }
-
-  console.log(tree);
 
   return (
     <div className="split-root">

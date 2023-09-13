@@ -22,9 +22,9 @@ impl NodeAbstractInfoReturnValue {
   }
 }
 
-/// get nodes abstract info by constructor name
-/// * `s` SnapshotDeserialized
-/// * `constructor_name` constructor name
+/// 根据构造器名称获取节点摘要信息
+/// * `s` 反序列化后的堆内存快照
+/// * `constructor_name` 构造器名称
 pub fn get_nodes_abstract_info_by_constructor_name(
   s: &SnapshotDeserialized,
   constructor_name: &str,

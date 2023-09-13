@@ -60,7 +60,7 @@ impl LocalAnalyzer {
     &self,
     node_idx: i64,
     from_node_idx: Option<i64>,
-  ) -> Vec<NodeFullInfoReturnValue> {
+  ) -> NodeFullInfoReturnValue {
     get_node_references(&self.snapshot, node_idx, from_node_idx)
   }
 }

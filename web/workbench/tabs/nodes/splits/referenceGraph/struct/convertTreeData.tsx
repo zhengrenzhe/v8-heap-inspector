@@ -6,7 +6,6 @@ import { NodeFullInfoReturnValue } from "@/binding";
 import { filterNotNullable, getNodeIcon, joinElements } from "@/web/utils";
 
 import { EDGE_STYLE_MAP, NODE_STYLE_MAP } from "./colorMap";
-import { capitalize } from "lodash";
 
 function getEdgeInfo(node: NodeFullInfoReturnValue) {
   if (!node.fromEdges) return [];
@@ -60,20 +59,17 @@ function getNodeInfo(node: NodeFullInfoReturnValue) {
 }
 
 export function convertTreeData(
-  startNodeIdx: number,
+  startNode: NodeFullInfoReturnValue,
   nodeTreeMap: Record<number, NodeFullInfoReturnValue>,
-  fromNodeIdx: string,
+  fromPath: string,
   expandedKeys: string[],
-): DataNode | null {
-  const node = nodeTreeMap[startNodeIdx];
-  if (!node) return null;
-
-  const key = `${fromNodeIdx}-${node.info.id}`;
+): DataNode {
+  const key = `${fromPath}-${startNode.info.nodeIdx}`;
 
   const title = (
     <div>
       {joinElements(
-        [...getEdgeInfo(node), getNodeInfo(node)],
+        [...getEdgeInfo(startNode), getNodeInfo(startNode)],
         <Text key="spliter" className="node-info-spliter">
           ::
         </Text>,
@@ -81,35 +77,28 @@ export function convertTreeData(
     </div>
   );
 
-  const children = (() => {
-    if (!expandedKeys.includes(key)) return [];
+  const children = (
+    startNode.children.length !== 0
+      ? startNode.children
+      : startNode.childrenIdx
+          .map((i) => nodeTreeMap[i])
+          .filter(filterNotNullable)
+  )
+    .sort((a, b) => {
+      if (a.info.nodeType !== b.info.nodeType) {
+        return a.info.nodeType.localeCompare(b.info.nodeType);
+      }
 
-    return node.childNodesIdx
-      .map((n) => convertTreeData(n, nodeTreeMap, key, expandedKeys))
-      .filter(filterNotNullable)
-      .sort((a, b) => {
-        const a_edge_type: string = (a as any).heapNodePayload.fromEdges
-          ?.map((e: any) => e.edgeType)
-          .join("-");
-
-        const b_edge_type: string = (b as any).heapNodePayload.fromEdges
-          ?.map((e: any) => e.edgeType)
-          .join("-");
-
-        if (a_edge_type !== b_edge_type) {
-          return a_edge_type.localeCompare(b_edge_type);
-        }
-
-        return a.key.toString().localeCompare(b.key.toString());
-      });
-  })();
+      return a.info.name.localeCompare(b.info.name);
+    })
+    .map((c) => convertTreeData(c, nodeTreeMap, key, expandedKeys));
 
   return {
     title,
-    icon: getNodeIcon(node),
+    icon: getNodeIcon(startNode),
     key,
-    isLeaf: !node.hasChildren,
+    isLeaf: !startNode.hasChildren,
     children,
-    heapNodePayload: node,
+    heapNodePayload: startNode,
   } as DataNode;
 }
